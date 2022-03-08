@@ -345,6 +345,10 @@ a .nome{
     cursor: pointer;
 }
 
+form input[type=text]{
+    text-transform: uppercase;
+}
+
 
 /*mobile*/
 @media(max-width:768px){

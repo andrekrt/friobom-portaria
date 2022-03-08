@@ -30,13 +30,13 @@ if($searchValue != ''){
 }
 
 ## Total number of records without filtering
-$stmt = $db->prepare("SELECT COUNT(DISTINCT token) AS allcount FROM descarga ");
+$stmt = $db->prepare("SELECT COUNT(*) AS allcount FROM descarga ");
 $stmt->execute();
 $records = $stmt->fetch();
 $totalRecords = $records['allcount'];
 
 ## Total number of records with filtering
-$stmt = $db->prepare("SELECT COUNT(DISTINCT token) AS allcount FROM descarga WHERE 1 ".$searchQuery );
+$stmt = $db->prepare("SELECT COUNT(*) AS allcount FROM descarga WHERE 1 ".$searchQuery);
 $stmt->execute($searchArray);
 $records = $stmt->fetch();
 $totalRecordwithFilter = $records['allcount'];
@@ -96,16 +96,19 @@ foreach($empRecords as $row){
     }
 
     if(($tipousuario==3 || $tipousuario==99) && ($row['situacao']=='Pago')){
-        $validar = '<a href="validar.php?token='.$row['token'].'" data-id="'.$row['token'].'"  class="btn btn-info btn-sm editbtn" >Validar</a>';
+        $validar = '<a href="javascript:void();" data-id="'.$row['token'].'"  class="btn btn-info btn-sm editbtn" >Validar</a>';
     }elseif(($tipousuario==4 || $tipousuario==99) && ($row['situacao']=='Validada')){
         $finalizar = '<a href="finalizar.php?token='.$row['token'].'" data-id="'.$row['token'].'"  class="btn btn-info btn-sm editbtn" >Finalizar</a>';
     }
+
+    /*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBonus" data-id="'.$row['token'].'"  > Abrir modal de demonstração </button>*/
     
     $data[] = array(
         "token"=>$row['token'],
         "iddescarga"=>$row['iddescarga'],
         "data"=>date("d/m/Y H:i", strtotime($row['data_hora_chegada'])),
         "departamento"=>$row['departamento'],
+        "bonus"=>$row['bonus'],
         "nome_fornecedor"=>$row['nome_fornecedor'],
         "tipo_frete"=>$row['tipo_frete'],
         "transportadora"=>$row['nome_transportadora'],

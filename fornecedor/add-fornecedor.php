@@ -3,7 +3,7 @@
 session_start();
 require("../conexao.php");
 
-if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_SESSION['tipousuario']==99)){
+if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_SESSION['tipousuario']==99 || $_SESSION['tipousuario']==3)){
 
     $usuario = $_SESSION['idusuario'];
     $nome = filter_input(INPUT_POST, 'nome');

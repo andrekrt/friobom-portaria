@@ -46,7 +46,7 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_S
             <div class="tela-principal">
                 <div class="menu-superior">
                     <div class="icone-menu-superior">
-                            <img src="../assets/images/icones/fornecedor.png" alt="">
+                            <img src="../assets/images/icones/icon-descarga.png" alt="">
                     </div>
                     <div class="title">
                         <h2>Descarga</h2>

@@ -69,7 +69,7 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false){
                             </ul>
                         </nav>
                     </div>
-                    <?php if($tipoUsuario==99): ?>
+                    <?php if($tipoUsuario==99 || $tipoUsuario ==3) : ?>
                     <div class="item">
                         <a onclick="menuFornecedor()">
                             <img src="assets/images/menu/menu-fornecedor.png" >
@@ -81,6 +81,8 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false){
                             </ul>
                         </nav>
                     </div>
+                    <?php endif; ?>
+                    <?php if($tipoUsuario==99): ?>
                     <div class="item">
                         <a class="" onclick="menuTransportadora()">
                             <img src="assets/images/menu/menu-transportadora.png">
