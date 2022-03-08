@@ -96,12 +96,10 @@ foreach($empRecords as $row){
     }
 
     if(($tipousuario==3 || $tipousuario==99) && ($row['situacao']=='Pago')){
-        $validar = '<a href="javascript:void();" data-id="'.$row['token'].'"  class="btn btn-info btn-sm editbtn" >Validar</a>';
+        $validar = '<a href="javascript:void();" id="bonus" data-id="'.$row['token'].'"  class="btn btn-info btn-sm editbtn" >Validar</a>';
     }elseif(($tipousuario==4 || $tipousuario==99) && ($row['situacao']=='Validada')){
         $finalizar = '<a href="finalizar.php?token='.$row['token'].'" data-id="'.$row['token'].'"  class="btn btn-info btn-sm editbtn" >Finalizar</a>';
     }
-
-    /*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBonus" data-id="'.$row['token'].'"  > Abrir modal de demonstração </button>*/
     
     $data[] = array(
         "token"=>$row['token'],
@@ -123,7 +121,7 @@ foreach($empRecords as $row){
         "forma_pagamento"=>$row['forma_pagamento'],
         "situacao"=>$row['situacao'],
         "usuario"=>$row['nome_usuario'],
-        "acoes"=> $editar . $ficha . $excluir . $imprimir . $validar . $finalizar
+        "acoes"=> $editar . $ficha . $excluir . $imprimir . $validar . $finalizar . $pendencia
     );
 }
 

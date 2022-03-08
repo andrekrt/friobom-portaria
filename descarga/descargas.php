@@ -130,19 +130,27 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
             });
         });
 
-        $('#tableDesc').on('click', '.editbtn', function(event){
+        $('#tableDesc').on('click', '#bonus', function(event){
             
-
             $('#modalBonus').modal('show');
 
             var dado = $('.editbtn').data('id');
-             $('#token').val(dado);
+            $('#token').val(dado);
+            
+        });
+
+        $('#tableDesc').on('click', '#pendencia', function(event){
+            
+            $('#modalPendencia').modal('show');
+
+            var dado = $('.editbtn').data('id');
+            $('#token').val(dado);
 
             
         });
     </script>
 
-
+<!-- Modal Bonus -->
 <div class="modal fade" id="modalBonus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
@@ -164,6 +172,58 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
             </div>
             <div class="modal-footer">
                 <button type="submit" name="analisar" class="btn btn-primary">Validar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Pendencia -->
+<div class="modal fade" id="modalPendencia" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Pendencia</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="validar.php" method="post">
+                    <input type="hidden" id="token" name="token">
+                    <div class="form-row">
+                        <div class="form-group form-check check-os">
+                            <input type="checkbox" class="form-check-input" id="cadastro" name="cadastro">
+                            <label class="form-check-label" for="cadastro">Cadastro</label>
+                        </div>
+                        <div class="form-group form-check check-os">
+                            <input type="checkbox" class="form-check-input" id="noPedido" name="noPedido">
+                            <label class="form-check-label" for="noPedido">Pedido Não Encontrado</label>
+                        </div>
+                    </div>  
+                    <div class="form-row">
+                        <div class="form-group form-check check-os">
+                            <input type="checkbox" class="form-check-input" id="preco" name="preco">
+                            <label class="form-check-label" for="preco">Preço Divergente</label>
+                        </div>
+                        <div class="form-group form-check check-os">
+                            <input type="checkbox" class="form-check-input" id="qtd" name="qtd">
+                            <label class="form-check-label" for="qtd">Qtd Divergente</label>
+                        </div>
+                        <div class="form-group  form-check check-os">
+                            <input type="checkbox" class="form-check-input" id="noProduto" name="noProduto">
+                            <label class="form-check-label" for="noProduto">Produto Inexistente</label>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12  ">
+                            <label for="obs"> Obs.</label>
+                            <input type="text" required name="obs" class="form-control" id="obs">
+                        </div> 
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" name="analisar" class="btn btn-primary">Registrar</button>
                 </form>
             </div>
         </div>
