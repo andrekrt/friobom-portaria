@@ -121,7 +121,7 @@ foreach($empRecords as $row){
         "forma_pagamento"=>$row['forma_pagamento'],
         "situacao"=>$row['situacao'],
         "usuario"=>$row['nome_usuario'],
-        "acoes"=> $editar . $ficha . $excluir . $imprimir . $validar . $finalizar . $pendencia
+        "acoes"=> $editar . $ficha . $excluir . $imprimir . $validar . $finalizar 
     );
 }
 
