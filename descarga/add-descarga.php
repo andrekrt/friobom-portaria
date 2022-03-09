@@ -57,6 +57,10 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_S
 
         $valorDescarga = $qtdVol[$i]*$valorVol;
 
+        if($valorDescarga==0){
+            $situacao = "Pago";
+        }
+
         $numNF = ltrim(substr($chaveNF[$i], 25, 9), '0') ;
 
         $sql = $db->prepare("INSERT INTO descarga (token, data_hora_chegada, data_hora_registro, fornecedor, transportadora, tipo_frete, nome_motorista, rg_motorista, contato_motorista, placa, chave_nf, num_nf, qtd_volume, valor_descarga, forma_pagamento, situacao, usuario_registro) VALUES (:token, :tempoChegada, :tempoRegistro, :fornecedor, :transportadora, :frete, :motorista, :rgMotorista, :contatoMotorista, :placa, :chaveNf, :numNf, :qtdVol, :valorDescarga, :pagamento, :situacao, :usuario)");

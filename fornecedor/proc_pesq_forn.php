@@ -53,7 +53,7 @@ $data = array();
 foreach($empRecords as $row){
     $data[] = array(
             "idfornecedores"=>$row['idfornecedores'],
-            "nome_fornecedor"=>$row['nome_fornecedor'],
+            "nome_fornecedor"=>strtoupper($row['nome_fornecedor']),
             "departamento"=>$row['departamento'],
             "tipo_volume"=>$row['tipo_volume'],
             "valor_volume"=>"R$".number_format($row['valor_volume'],3,",",".") ,

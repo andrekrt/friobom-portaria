@@ -51,7 +51,7 @@ $data = array();
 foreach($empRecords as $row){
     $data[] = array(
         "idtransportadoras"=>$row['idtransportadoras'],
-        "nome_transportadora"=>$row['nome_transportadora'],
+        "nome_transportadora"=>strtoupper($row['nome_transportadora']),
         "valor_volume"=>"R$".number_format($row['valor_volume_transp'],3, ",", ""),
         "acoes"=> '<a href="javascript:void();" data-id="'.$row['idtransportadoras'].'"  class="btn btn-info btn-sm editbtn" >Visulizar</a>  <a href="excluir-transp.php?id='.$row['idtransportadoras'].' " data-id="'.$row['idtransportadoras'].'"  class="btn btn-danger btn-sm deleteBtn" >Deletar</a>'
     );
