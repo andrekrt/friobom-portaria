@@ -3,13 +3,13 @@
 session_start();
 require("../conexao.php");
 
-if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_SESSION['tipousuario']==99 || $_SESSION['tipousuario']==3)){
+if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_SESSION['tipousuario']==99)){
 
     $id = filter_input(INPUT_POST, 'idTransp');
     $transportadora = filter_input(INPUT_POST, 'transportadora');
     $valorVolume = str_replace(",",".",filter_input(INPUT_POST, 'valorVolume')) ;
 
-    echo "$id<br>$transportadora<br>$valorVolume";
+    //echo "$id<br>$transportadora<br>$valorVolume";
 
     $atualiza = $db->prepare("UPDATE transportadoras SET nome_transportadora = :transportadora, valor_volume_transp = :valorVolume WHERE idtransportadoras = :id");
     $atualiza->bindValue(':transportadora', $transportadora);

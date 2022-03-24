@@ -11,7 +11,7 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_S
     $tipoVolume = filter_input(INPUT_POST, 'tipoVolume');
     $valorVolume = str_replace(",",".",filter_input(INPUT_POST, 'valorVolume')) ;
 
-    echo "$id<br>$fornecedor<br>$departamento<br>$tipoVolume<br>$valorVolume";
+    //echo "$id<br>$fornecedor<br>$departamento<br>$tipoVolume<br>$valorVolume";
 
     $atualiza = $db->prepare("UPDATE fornecedores SET nome_fornecedor = :fornecedor, departamento = :departamento, tipo_volume = :tipoVolume, valor_volume = :valorVolume WHERE idfornecedores = :id");
     $atualiza->bindValue(':fornecedor', $fornecedor);

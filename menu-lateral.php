@@ -18,6 +18,7 @@
                     <li class="nav-item"> <a class="nav-link" href="../descarga/form-descarga.php"> Nova Descarga </a> </li>
                     <?php endif; ?>
                     <li class="nav-item"> <a class="nav-link" href="../descarga/descargas.php">Descargas </a> </li>
+                    <li class="nav-item"> <a class="nav-link" href="../descarga/pendencias.php">Pendências </a> </li>
                 </ul>
             </nav>
         </div>
@@ -33,7 +34,8 @@
                 </ul>
             </nav>
         </div>
-        
+        <?php endif; ?>
+        <?php if($tipoUsuario==99): ?>
         <div class="item">
             <a class="" onclick="menuTransportadora()">
                 <img src="../assets/images/menu/menu-transportadora.png">
@@ -45,8 +47,6 @@
                 </ul>
             </nav>
         </div>
-        <?php endif; ?>
-        <?php if($tipoUsuario==99): ?>
         <div class="item">
             <a onclick="menuUsuario()">
                 <img src="../assets/images/menu/usuarios.png">

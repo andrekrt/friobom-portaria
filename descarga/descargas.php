@@ -63,6 +63,7 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
                                 <th scope="col" class="text-center text-nowrap">Data Chegada</th>
                                 <th scope="col" class="text-center text-nowrap">Departamento</th>
                                 <th scope="col" class="text-center text-nowrap">Bônus</th>
+                                <th scope="col" class="text-center text-nowrap">Doca</th>
                                 <th scope="col" class="text-center text-nowrap">Fornecedor</th>
                                 <th scope="col" class="text-center text-nowrap">Tipo de Frete</th>
                                 <th scope="col" class="text-center text-nowrap">Transportadora</th>
@@ -75,7 +76,9 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
                                 <th scope="col" class="text-center text-nowrap"> Valor Total Descarga </th>
                                 <th scope="col" class="text-center text-nowrap">Forma de Pagamento </th>
                                 <th scope="col" class="text-center text-nowrap">Status </th>
-                                <th scope="col" class="text-center text-nowrap"> Registrado </th>
+                                <th scope="col" class="text-center text-nowrap">Pendência </th>
+                                <th scope="col" class="text-center text-nowrap">Anexos Pendência </th>
+                                <th scope="col" class="text-center text-nowrap">Problema na Descarga </th>
                                 <th scope="col" class="text-center text-nowrap"> Ações</th>
                             </tr>
                         </thead>
@@ -108,6 +111,7 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
                     { data: 'data'},
                     { data: 'departamento'},
                     { data: 'bonus'},
+                    { data: 'doca'},
                     { data: 'nome_fornecedor'},
                     { data: 'tipo_frete'},
                     { data: 'transportadora'},
@@ -120,7 +124,9 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
                     { data: 'valorTotalDescarga'},
                     { data: 'forma_pagamento'},
                     { data: 'situacao'},
-                    { data: 'usuario'},
+                    { data: 'pendencia'},
+                    { data: 'anexo_pendencia'},
+                    { data: 'problema'},
                     { data: 'acoes'},
                 ],
                 "language":{
@@ -130,48 +136,91 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
             });
         });
 
-        $('#tableDesc').on('click', '#bonus', function(event){
+        $('#tableDesc').on('click', '#iniciar', function(event){
+            var table = $('#tableDesc').DataTable();
+            var trid = $(this).closest('tr').attr('id');
+            var id = $(this).data('id');
             
-            $('#modalBonus').modal('show');
+            $('#modalIniciar').modal('show');
 
-            var dado = $('.editbtn').data('id');
-            $('#token').val(dado);
+            $.ajax({
+                url:"get_desc.php",
+                data:{id:id},
+                type:'post',
+                success: function(data){
+                    var json = JSON.parse(data);
+                    $('#tokenIniciar').val(json.token);
+                    
+                }
+            })
             
         });
 
         $('#tableDesc').on('click', '#pendencia', function(event){
             
+            var table = $('#tableDesc').DataTable();
+            var trid = $(this).closest('tr').attr('id');
+            var id = $(this).data('id');
+            
             $('#modalPendencia').modal('show');
 
-            var dado = $('.editbtn').data('id');
-            $('#token').val(dado);
+            $.ajax({
+                url:"get_desc.php",
+                data:{id:id},
+                type:'post',
+                success: function(data){
+                    var json = JSON.parse(data);
+                    $('#iddescarga').val(json.iddescarga);
+                    $('#token').val(json.token);
+                    
+                }
+            })
+            
+        });
 
+        $('#tableDesc').on('click', '#finalizar', function(event){
+            
+            var table = $('#tableDesc').DataTable();
+            var trid = $(this).closest('tr').attr('id');
+            var id = $(this).data('id');
+            
+            $('#modalFinalizar').modal('show');
+
+            $.ajax({
+                url:"get_desc.php",
+                data:{id:id},
+                type:'post',
+                success: function(data){
+                    var json = JSON.parse(data);
+                    $('#tokenDesc').val(json.token);
+                    $('#idFinalizar').val(json.iddescarga);
+                    
+                }
+            })
             
         });
     </script>
 
-<!-- Modal Bonus -->
-<div class="modal fade" id="modalBonus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm" role="document">
+<!-- Modal finalizar descarga -->
+<div class="modal fade" id="modalFinalizar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog " role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Validar</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Finalizar</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form action="validar.php" method="post">
-                    <input type="hidden" id="token" name="token">
-                    <div class="form-row">
-                        <div class="form-group col-md-12  ">
-                            <label for="bonus"> Bônus</label>
-                            <input type="text" required name="bonus" class="form-control" id="bonus">
-                        </div>                                         
-                    </div>    
+                <form action="finalizar-descarga.php" method="post" enctype="multipart/form-data" >
+                    <input type="hidden" id="tokenDesc" name="tokenDesc">
+                    <input type="hidden" id="idFinalizar" name="idFinalizar">
+                    <p>Houve Problema na Descarga</p>
+                    <input type="radio" name="problema" id="SIM" value="SIM"> <label for="SIM">SIM</label>
+                    <input type="radio" name="problema" id="NÃO" value="NÃO"> <label for="NÃO">NÃO</label>   
             </div>
             <div class="modal-footer">
-                <button type="submit" name="analisar" class="btn btn-primary">Validar</button>
+                <button type="submit" name="analisar" class="btn btn-primary">Finalizar</button>
                 </form>
             </div>
         </div>
@@ -183,13 +232,14 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
     <div class="modal-dialog " role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Pendencia</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Pendência</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form action="validar.php" method="post">
+                <form action="add-pendencia.php" method="post" enctype="multipart/form-data">
+                    <input type="hidden" id="iddescarga" name="iddescarga">
                     <input type="hidden" id="token" name="token">
                     <div class="form-row">
                         <div class="form-group form-check check-os">
@@ -217,13 +267,51 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-12  ">
+                            <label for="anexo"> Anexar Arquivos </label>
+                            <input type="file" multiple name="anexo[]" class="form-control" id="anexo">
+                        </div>                                         
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12  ">
                             <label for="obs"> Obs.</label>
-                            <input type="text" required name="obs" class="form-control" id="obs">
+                            <textarea name="obs" id="obs" class="form-control" rows="3"></textarea>
                         </div> 
                     </div>
             </div>
             <div class="modal-footer">
                 <button type="submit" name="analisar" class="btn btn-primary">Registrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal iniciar descarga -->
+<div class="modal fade" id="modalIniciar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Inicia Descarga</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="iniciar-descarga.php" method="post">
+                    <input type="hidden" id="tokenIniciar" name="tokenIniciar">
+                    <div class="form-row">
+                        <div class="form-group col-md-6 ">
+                            <label for="bonus"> Bônus</label>
+                            <input type="text" required name="bonus" class="form-control" id="bonus">
+                        </div> 
+                        <div class="form-group col-md-6  ">
+                            <label for="doca"> Doca </label>
+                            <input type="text" required name="doca" class="form-control" id="doca">
+                        </div>                                        
+                    </div>    
+            </div>
+            <div class="modal-footer">
+                <button type="submit" name="analisar" class="btn btn-primary">Validar</button>
                 </form>
             </div>
         </div>

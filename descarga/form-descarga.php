@@ -73,7 +73,11 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_S
                                     ?>
                                     </select>
                                 </div>
-                                <div class="form-group col-md-3 espaco ">
+                                <div class="form-group col-md-2 espaco">
+                                    <label for="tipoVol">Tipo de Volume</label>
+                                    <input type="text" readonly name="tipoVol" id="tipoVol" class="form-control">
+                                </div>
+                                <div class="form-group col-md-2 espaco ">
                                     <label for="tipoFrete">Tipo de Frete </label>
                                     <select required name="tipoFrete" id="tipoFrete" class="form-control">
                                         <option value=""></option>
@@ -81,7 +85,7 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_S
                                         <option value="FOB (ESTAMOS NO REMETENTE)">FOB (ESTAMOS NO REMETENTE)</option>
                                     </select>
                                 </div>
-                                <div class="form-group col-md-3 espaco ">
+                                <div class="form-group col-md-2 espaco ">
                                     <label for="transportadora">Transportadora</label>
                                     <select required name="transportadora" id="transportadora" class="form-control">
                                         <option value=""></option>
@@ -128,7 +132,7 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_S
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary"> Cadastrar </button>
+                        <button type="submit" class="btn btn-primary"> Lançar </button>
                     </form>
                 </div>
             </div>
@@ -137,6 +141,7 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_S
         <script src="../assets/js/bootstrap.bundle.min.js"></script>
         <script src="../assets/js/menu.js"></script>
         <script src="../assets/js/jquery.mask.js"></script>
+        
         <script>
             $(document).ready(function(){
                 var cont = 1;
@@ -146,17 +151,32 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_S
 
                     $('#formulario').append('<div class="form-row"> <div class="form-group col-md-5 espaco "> <label for="chaveNf">Chave NF (Digitalizar)</label> <input type="text" required name="chaveNf[]" class="form-control" id="chaveNf" onkeydown="return(event.keyCode!=13);"> </div> <div class="form-group col-md-2 espaco "> <label for="qtdVol">Qtd de Volume</label> <input type="text" required name="qtdVol[]" class="form-control" id="qtdVol"> </div> </div>');
                 });
-            });
-        </script>
-        <script>
-            $(document).ready(function(){
+
                 $('#fornecedor').select2();
                 $('#transportadora').select2();
+
+                $("select[name='fornecedor']").change(function(){
+                    var $tipoVol = $("input[name='tipoVol']");
+                    var codFornecedor = $(this).val();
+                    
+                    $.getJSON('consultaVol.php', {codFornecedor},
+                        function(retorno){
+                            $tipoVol.val(retorno.tipo_volume); 
+                        }
+                    );
+                });
             });
-        </script>
-        <script>
+
             jQuery(function($){
                 $("#contatoMotorista").mask("(99) 9 9999-9999");
+            });
+
+            document.addEventListener("keydown", function(e){
+                if(e.keyCode===13){
+
+                    e.preventDefault();
+
+                }
             });
         </script>
     </body>
