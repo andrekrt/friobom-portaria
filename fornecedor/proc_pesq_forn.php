@@ -53,11 +53,11 @@ $data = array();
 foreach($empRecords as $row){
     $data[] = array(
             "idfornecedores"=>$row['idfornecedores'],
-            "nome_fornecedor"=>$row['nome_fornecedor'],
+            "nome_fornecedor"=>strtoupper($row['nome_fornecedor']),
             "departamento"=>$row['departamento'],
             "tipo_volume"=>$row['tipo_volume'],
             "valor_volume"=>"R$".number_format($row['valor_volume'],3,",",".") ,
-            "usuario_registro"=>$row['nome_usuario'],
+            "usuario_registro"=>strtoupper($row['nome_usuario']),
             "acoes"=> '<a href="javascript:void();" data-id="'.$row['idfornecedores'].'"  class="btn btn-info btn-sm editbtn" >Visulizar</a>  <a href="excluir-fornec.php?id='.$row['idfornecedores'].' " data-id="'.$row['idfornecedores'].'"  class="btn btn-danger btn-sm deleteBtn" >Deletar</a>'
         );
 }

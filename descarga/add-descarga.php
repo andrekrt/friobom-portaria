@@ -5,6 +5,10 @@ require("../conexao.php");
 
 if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_SESSION['tipousuario'] ==1 || $_SESSION['tipousuario']==99)){
 
+
+    $token = filter_input(INPUT_POST, 'token');
+    $cadastro = filter_input(INPUT_POST, 'cadastro')?1:0;
+
     $consultaToken = $db->query("SELECT MAX(token) as token FROM descarga");
     $token = $consultaToken->fetch();
     if(empty($token['token'])){
@@ -56,6 +60,10 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_S
     for($i=0; $i<count($chaveNF); $i++){
 
         $valorDescarga = $qtdVol[$i]*$valorVol;
+
+        if($valorDescarga==0 || $formaPagamento == "Desconto em Título"){
+            $situacao = "Pago";
+        }
 
         $numNF = ltrim(substr($chaveNF[$i], 25, 9), '0') ;
 

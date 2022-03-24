@@ -18,6 +18,7 @@
                     <li class="nav-item"> <a class="nav-link" href="../descarga/form-descarga.php"> Nova Descarga </a> </li>
                     <?php endif; ?>
                     <li class="nav-item"> <a class="nav-link" href="../descarga/descargas.php">Descargas </a> </li>
+                    <li class="nav-item"> <a class="nav-link" href="../descarga/pendencias.php">Pendências </a> </li>
                 </ul>
             </nav>
         </div>
