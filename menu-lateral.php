@@ -34,8 +34,6 @@
                 </ul>
             </nav>
         </div>
-        <?php endif; ?>
-        <?php if($tipoUsuario==99): ?>
         <div class="item">
             <a class="" onclick="menuTransportadora()">
                 <img src="../assets/images/menu/menu-transportadora.png">
