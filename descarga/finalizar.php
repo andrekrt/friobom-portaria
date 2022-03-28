@@ -17,7 +17,7 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_S
 
     $sql = $db->prepare("UPDATE descarga SET situacao = :situacao, problema = :problemas, obs_problema = :obs WHERE token = :token");
     $sql->bindValue(':token', $token);
-    $sql->bindValue(':situacao', "Descarga Finaliza");
+    $sql->bindValue(':situacao', "Descarga Finalizada");
     $sql->bindValue(':problemas', $problema);
     $sql->bindValue(':obs', $obsProblema);
 

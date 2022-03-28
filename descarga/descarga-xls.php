@@ -25,9 +25,12 @@ $tipoUsuario = $_SESSION['tipousuario'];
                 $html .= '<table border="1">';
                 $html .= '<tr>';
                 $html .= '<td class="text-center font-weight-bold"> ID </td>';
+                $html .= '<td class="text-center font-weight-bold"> Token </td>';
                 $html .= '<td class="text-center font-weight-bold"> Data e Hora de Chegada </td>';
                 $html .= '<td class="text-center font-weight-bold"> Data e Hora de Registro </td>';
                 $html .= '<td class="text-center font-weight-bold"> Fornecedor </td>';
+                $html .= '<td class="text-center font-weight-bold"> Bônus </td>';
+                $html .= '<td class="text-center font-weight-bold"> Doca </td>';
                 $html .= '<td class="text-center font-weight-bold"> Transportadora </td>';
                 $html .= '<td class="text-center font-weight-bold"> Tipo de Frete </td>';
                 $html .= '<td class="text-center font-weight-bold"> Nome Motorista </td>';
@@ -40,6 +43,8 @@ $tipoUsuario = $_SESSION['tipousuario'];
                 $html .= '<td class="text-center font-weight-bold"> Valor Descarga </td>';
                 $html .= '<td class="text-center font-weight-bold"> Forma de Pagamento</td>';
                 $html .= '<td class="text-center font-weight-bold"> Situação </td>';
+                $html .= '<td class="text-center font-weight-bold"> Pendência </td>';
+                $html .= '<td class="text-center font-weight-bold"> Problema </td>';
                 $html .= '</tr>';
 
                 $sql = $db->query("SELECT * FROM descarga LEFT JOIN fornecedores ON descarga.fornecedor = fornecedores.idfornecedores LEFT JOIN transportadoras ON descarga.transportadora = transportadoras.idtransportadoras");
@@ -47,10 +52,13 @@ $tipoUsuario = $_SESSION['tipousuario'];
                 foreach($dados as $dado){
 
                     $html .= '<tr>';
+                    $html .= '<td>'.$dado['iddescarga']. '</td>';
                     $html .= '<td>'.$dado['token']. '</td>';
                     $html .= '<td>'. date("d/m/Y H:i", strtotime($dado['data_hora_chegada'])) . '</td>';
                     $html .= '<td>'.date("d/m/Y H:i", strtotime($dado['data_hora_registro'])) . '</td>';
                     $html .= '<td>'. $dado['nome_fornecedor']. '</td>';
+                    $html .= '<td>'. $dado['bonus']. '</td>';
+                    $html .= '<td>'. $dado['doca']. '</td>';
                     $html .= '<td>'.$dado['nome_transportadora']. '</td>';
                     $html .= '<td>'.$dado['tipo_frete'] . '</td>';
                     $html .= '<td>'.$dado['nome_motorista'] . '</td>';
@@ -63,6 +71,8 @@ $tipoUsuario = $_SESSION['tipousuario'];
                     $html .= '<td>'.str_replace(".",",",$dado['valor_descarga']) . '</td>';
                     $html .= '<td>'.$dado['forma_pagamento']. '</td>';
                     $html .= '<td>'.$dado['situacao']. '</td>';
+                    $html .= '<td>'.$dado['pendencia']. '</td>';
+                    $html .= '<td>'.$dado['problema']. '</td>';
                     $html .= '</tr>';
 
                 }
