@@ -8,10 +8,13 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false){
     $bonus = filter_input(INPUT_POST, 'bonus');
     $doca = filter_input(INPUT_POST, 'doca');
     $situacao = "Descarga Iniciada";
-    $sql = $db->prepare("UPDATE descarga SET situacao = :situacao, bonus = :bonus, doca = :doca WHERE token = :token" );
+    $data = date('Y-m-d H:i');
+
+    $sql = $db->prepare("UPDATE descarga SET situacao = :situacao, bonus = :bonus, doca = :doca, data_hora_iniciodesc = :dataInicioDesc WHERE token = :token" );
     $sql->bindValue(':situacao', $situacao);
     $sql->bindValue(':bonus', $bonus);
     $sql->bindValue(':doca', $doca);
+    $sql->bindValue(':dataInicioDesc', $data);
     $sql->bindValue(':token', $token);
 
     //echo "$token<br>$situacao<br>$bonus<br>$doca";

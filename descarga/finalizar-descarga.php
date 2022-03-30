@@ -10,6 +10,7 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_S
     $token = filter_input(INPUT_POST, 'tokenDesc' );
     $problema = filter_input(INPUT_POST, 'problema');
     $idDescarga = filter_input(INPUT_POST, 'idFinalizar');
+    $data = date('Y-m-d H:i');
 
     $pendencias = $db->prepare("SELECT * FROM pendencias WHERE token_descarga = :token AND situacao_pendencia = :situacao");
     $pendencias->bindValue(':token', $idDescarga);
@@ -19,8 +20,9 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_S
     $pendencias = $pendencias->rowCount();
 
     if($problema=="NÃO" && $pendencias==0){
-        $atualiza = $db->prepare("UPDATE descarga SET situacao = :situacao WHERE token = :token");
+        $atualiza = $db->prepare("UPDATE descarga SET situacao = :situacao, data_hora_fimdesc = :dataFimDesc WHERE token = :token");
         $atualiza->bindValue(':situacao', "Descarga Finalizada");
+        $atualiza->bindValue(':dataFimDesc', $data);
         $atualiza->bindValue(':token', $token);
         if($atualiza->execute()){
             echo "<script>alert('Descarga Finalizada!');</script>";
