@@ -45,6 +45,12 @@ $tipoUsuario = $_SESSION['tipousuario'];
                 $html .= '<td class="text-center font-weight-bold"> Situação </td>';
                 $html .= '<td class="text-center font-weight-bold"> Pendência </td>';
                 $html .= '<td class="text-center font-weight-bold"> Problema </td>';
+                $html .= '<td class="text-center font-weight-bold"> Data de Pagamento </td>';
+                $html .= '<td class="text-center font-weight-bold"> Data da Pendência </td>';
+                $html .= '<td class="text-center font-weight-bold"> Data da Validação </td>';
+                $html .= '<td class="text-center font-weight-bold"> Data do Início Descarga </td>';
+                $html .= '<td class="text-center font-weight-bold"> Data do Fim Descarga </td>';
+                $html .= '<td class="text-center font-weight-bold"> Data de Recebimento</td>';
                 $html .= '</tr>';
 
                 $sql = $db->query("SELECT * FROM descarga LEFT JOIN fornecedores ON descarga.fornecedor = fornecedores.idfornecedores LEFT JOIN transportadoras ON descarga.transportadora = transportadoras.idtransportadoras");
@@ -73,16 +79,22 @@ $tipoUsuario = $_SESSION['tipousuario'];
                     $html .= '<td>'.$dado['situacao']. '</td>';
                     $html .= '<td>'.$dado['pendencia']. '</td>';
                     $html .= '<td>'.$dado['problema']. '</td>';
+                    $html .= '<td>'.$dado['data_hora_pago']. '</td>';
+                    $html .= '<td>'.$dado['data_hora_pendencia']. '</td>';
+                    $html .= '<td>'.$dado['data_hora_validacao']. '</td>';
+                    $html .= '<td>'.$dado['data_hora_iniciodesc']. '</td>';
+                    $html .= '<td>'.$dado['data_hora_fimdesc']. '</td>';
+                    $html .= '<td>'.$dado['data_hora_recebido']. '</td>';
                     $html .= '</tr>';
 
                 }
 
                 $html .= '</table>';
 
-                header('Content-Type: application/vnd.ms-excel');
+                /*header('Content-Type: application/vnd.ms-excel');
                 header('Content-Disposition: attachment;filename="'.$arquivo.'"');
                 header('Cache-Control: max-age=0');
-                header('Cache-Control: max-age=1');
+                header('Cache-Control: max-age=1');*/
 
                 echo $html;
 
