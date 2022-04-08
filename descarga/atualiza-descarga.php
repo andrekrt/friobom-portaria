@@ -38,13 +38,13 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false){
 
     }
 
-    $situacao = filter_input(INPUT_POST, 'situacao')?filter_input(INPUT_POST, 'situacao'):'Aguardando Pagamento';
+    $pago = filter_input(INPUT_POST, 'situacao')?1:0;
     
     for($i=0; $i<count($idDesc); $i++){
 
         $valorDescarga = $qtdVol[$i]*$valorVol;
 
-        $sql = $db->prepare("UPDATE descarga SET data_hora_chegada = :tempoChegada, fornecedor = :fornecedor, transportadora = :transportadora, tipo_frete = :frete, nome_motorista = :motorista, rg_motorista = :rgMotorista, contato_motorista = :contatoMotorista, placa = :placa, qtd_volume = :qtdVol, valor_descarga = :valorDescarga, forma_pagamento = :pagamento, situacao = :situacao, data_hora_pago = :dataPagamento WHERE iddescarga = :id");
+        $sql = $db->prepare("UPDATE descarga SET data_hora_chegada = :tempoChegada, fornecedor = :fornecedor, transportadora = :transportadora, tipo_frete = :frete, nome_motorista = :motorista, rg_motorista = :rgMotorista, contato_motorista = :contatoMotorista, placa = :placa, qtd_volume = :qtdVol, valor_descarga = :valorDescarga, forma_pagamento = :pagamento, pago = :pago, data_hora_pago = :dataPagamento WHERE iddescarga = :id");
         $sql->bindValue(':tempoChegada', $tempoChegada);
         $sql->bindValue(':fornecedor', $fornecedor);
         $sql->bindValue(':transportadora', $transportadora);
@@ -56,7 +56,7 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false){
         $sql->bindValue(':qtdVol', $qtdVol[$i]);
         $sql->bindValue(':valorDescarga', $valorDescarga);
         $sql->bindValue(':pagamento', $formaPagamento);
-        $sql->bindValue(':situacao', $situacao);
+        $sql->bindValue(':pago', $pago);
         $sql->bindValue(':dataPagamento', $data);
         $sql->bindValue(':id', $idDesc[$i]);
         

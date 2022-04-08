@@ -75,6 +75,7 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
                                 <th scope="col" class="text-center text-nowrap"> Valor por Qtd </th>
                                 <th scope="col" class="text-center text-nowrap"> Valor Total Descarga </th>
                                 <th scope="col" class="text-center text-nowrap">Forma de Pagamento </th>
+                                <th scope="col" class="text-center text-nowrap">Pago </th>
                                 <th scope="col" class="text-center text-nowrap">Status </th>
                                 <th scope="col" class="text-center text-nowrap">Pendência </th>
                                 <th scope="col" class="text-center text-nowrap">Anexos Pendência </th>
@@ -123,6 +124,7 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
                     { data: 'valorVol'},
                     { data: 'valorTotalDescarga'},
                     { data: 'forma_pagamento'},
+                    { data: 'pago'},
                     { data: 'situacao'},
                     { data: 'pendencia'},
                     { data: 'anexo_pendencia'},
