@@ -84,21 +84,21 @@ foreach($empRecords as $row){
         $valorVolume = $row['valor_volume_transp'];
     }
 
-    if(($tipousuario ==1 || $tipousuario == 99) && ($row['situacao']=='Aguardando Pagamento')){
+    if(($tipousuario ==1 || $tipousuario == 99) && ($row['situacao']=='Aguardando Validação')){
         $ficha = '<a target="_blank" class="btn btn-sm btn-primary" href="ordem-pagamento.php?id='.$row['token'].'">Ficha</a>';
         $editar='<a href="form-edit-desc.php?idDesc='.$row['iddescarga'].'" data-id="'.$row['iddescarga'].'"  class="btn btn-info btn-sm editbtn" >Visualizar</a>';
     }
 
-    if(($tipousuario==2 || $tipousuario==99) && ($row['situacao']=='Pago')){
+    if(($tipousuario==2 || $tipousuario==99) && ($row['pago']==1)){
         $imprimir = '<a target="_blank" class="btn btn-sm btn-success" href="recibo.php?token='.$row['token'].'">Recibo</a>';
-    }elseif(($tipousuario==2 || $tipousuario==99) && ($row['situacao']=='Aguardando Pagamento')){
+    }elseif(($tipousuario==2 || $tipousuario==99) && ($row['pago']==0)){
         $editar='<a href="form-edit-desc.php?idDesc='.$row['iddescarga'].'" data-id="'.$row['iddescarga'].'"  class="btn btn-info btn-sm editbtn" >Visualizar</a>';
     }
 
-    if(($tipousuario==3 || $tipousuario==99) && ($row['situacao']=='Pago')){
+    if(($tipousuario==3 || $tipousuario==99) && ($row['situacao']=='Aguardando Validação')){
         $validar = '<a href="validar.php?token='.$row['token'].'" id="bonus" data-id="'.$row['iddescarga'].'"  class="btn btn-info btn-sm editbtn" >Validar</a>';
         $pendencia = '<a href="javascript:void();" id="pendencia" data-id="'.$row['iddescarga'].'"  class="btn btn-danger btn-sm editbtn" >Pendência</a>';
-    }elseif(($tipousuario==4 || $tipousuario==99) && ($row['situacao']=='Validada')){
+    }elseif(($tipousuario==4 || $tipousuario==99) && ($row['situacao']=='Validada' && $row['pago']==1)){
         $descarga = '<a href="javascript:void();" id="iniciar" data-id="'.$row['iddescarga'].'"  class="btn btn-info btn-sm editbtn" >Inicar Descarga</a>';
         
     }elseif(($tipousuario==4 || $tipousuario==99) && ($row['situacao']=='Descarga Iniciada')){
@@ -113,6 +113,12 @@ foreach($empRecords as $row){
         $anexo = '<a href="nfs/'.$row['token'].'">NFs</a>';
     }else{
         $anexo='Sem NF';
+    }
+
+    if($row['pago']==1){
+        $pago = "SIM";
+    }else{
+        $pago= "NÃO";
     }
     $data[] = array(
         "token"=>$row['token'],
@@ -133,6 +139,7 @@ foreach($empRecords as $row){
         "valorVol"=>"R$". str_replace(".",",",$valorVolume) ,
         "valorTotalDescarga"=>"R$". number_format( $row['totalDescarga'],2,",",".") ,
         "forma_pagamento"=>$row['forma_pagamento'],
+        "pago"=>$pago,
         "situacao"=>strtoupper($row['situacao']),
         "pendencia"=>strtoupper($row['pendencia']),
         "anexo_pendencia"=>$anexo,

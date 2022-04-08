@@ -55,19 +55,21 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_S
         //echo "$valorVol";
     }
 
-    $situacao = "Aguardando Pagamento";
+    $situacao = "Aguardando Validação";
     
     for($i=0; $i<count($chaveNF); $i++){
 
         $valorDescarga = $qtdVol[$i]*$valorVol;
 
         if($valorDescarga==0 || $formaPagamento == "Desconto em Título"){
-            $situacao = "Pago";
+            $pago = 1;
+        }else{
+            $pago = 0;
         }
 
         $numNF = ltrim(substr($chaveNF[$i], 25, 9), '0') ;
 
-        $sql = $db->prepare("INSERT INTO descarga (token, data_hora_chegada, data_hora_registro, fornecedor, transportadora, tipo_frete, nome_motorista, rg_motorista, contato_motorista, placa, chave_nf, num_nf, qtd_volume, valor_descarga, forma_pagamento, situacao, usuario_registro) VALUES (:token, :tempoChegada, :tempoRegistro, :fornecedor, :transportadora, :frete, :motorista, :rgMotorista, :contatoMotorista, :placa, :chaveNf, :numNf, :qtdVol, :valorDescarga, :pagamento, :situacao, :usuario)");
+        $sql = $db->prepare("INSERT INTO descarga (token, data_hora_chegada, data_hora_registro, fornecedor, transportadora, tipo_frete, nome_motorista, rg_motorista, contato_motorista, placa, chave_nf, num_nf, qtd_volume, valor_descarga, forma_pagamento, situacao, pago, usuario_registro) VALUES (:token, :tempoChegada, :tempoRegistro, :fornecedor, :transportadora, :frete, :motorista, :rgMotorista, :contatoMotorista, :placa, :chaveNf, :numNf, :qtdVol, :valorDescarga, :pagamento, :situacao, :pago, :usuario)");
         $sql->bindValue(':token', $newToken);
         $sql->bindValue(':tempoChegada', $tempoChegada);
         $sql->bindValue(':tempoRegistro', $tempoRegistro);
@@ -84,6 +86,7 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_S
         $sql->bindValue(':valorDescarga', $valorDescarga);
         $sql->bindValue(':pagamento', $formaPagamento);
         $sql->bindValue(':situacao', $situacao);
+        $sql->bindValue(':pago', $pago);
         $sql->bindValue(':usuario', $usuario);
         
         if($sql->execute()){

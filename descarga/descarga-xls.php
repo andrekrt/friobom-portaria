@@ -91,10 +91,10 @@ $tipoUsuario = $_SESSION['tipousuario'];
 
                 $html .= '</table>';
 
-                /*header('Content-Type: application/vnd.ms-excel');
+                header('Content-Type: application/vnd.ms-excel');
                 header('Content-Disposition: attachment;filename="'.$arquivo.'"');
                 header('Cache-Control: max-age=0');
-                header('Cache-Control: max-age=1');*/
+                header('Cache-Control: max-age=1');
 
                 echo $html;
 
