@@ -89,18 +89,18 @@ if($tipousuario==2 || $tipousuario==99){
         <div style='width: 100%; border: 1px solid #000; border-radius: 15px; margin-top:10px'>
             <p>Recebi no dia $dataAtual de $motorista <br> RG $rg o valor de R$ $valorTotal reais referente a prestação de serviço de desacarga de mercadorias.</p>
         </div>
-        <div style='width: 100%; text-align:center; margin-top:10px;'>
-            <div style='width: 30%; float: left; border: 1px solid #000; border-radius:15px;'>
-                <p style='margin-top:0'>Recibo de <br>Prestação de Serviços <br> Nº $token </p> 
+        <div style='width: 100%; text-align:center; margin-top:10px; height:50px'>
+            <div style='width: 15%; float: left; border: 1px solid #000; border-radius:15px; height:75px'>
+                <p style='margin-top:0; font-size:10px'>Recibo de <br>Prestação de Serviços <br> Nº $token </p> 
             </div>
-            <div style='width: 69%; float: right; border: 1px solid #000; border-radius: 15px; display: flex; flex-direction: row;'>
+            <div style='width: 84%; float: right; border: 1px solid #000; border-radius: 15px; display: flex; flex-direction: row;'>
                 <div style='float:left; width: 30%; border-right: 1px solid #000; font-size:13px;  height:75px'>
                     Data do Recebimento <br>
                     $dataAtual
                 </div>
                 <div style='float:right; text-align: center'>
                     Identificação e Recebimento <br>
-                    <img style='margin:0' src='../assets/images/assinaturas/assinatura.png' >
+                    <img style='margin:0; height:50px' src='../assets/images/assinaturas/assinatura.png' >
                 </div>
             </div>
         </div>

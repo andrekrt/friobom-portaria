@@ -84,7 +84,7 @@ foreach($empRecords as $row){
         $valorVolume = $row['valor_volume_transp'];
     }
 
-    if(($tipousuario ==1 || $tipousuario == 99) && ($row['situacao']=='Aguardando Validação')){
+    if(($tipousuario ==1 || $tipousuario == 99) && ($row['pago']==0)){
         $ficha = '<a target="_blank" class="btn btn-sm btn-primary" href="ordem-pagamento.php?id='.$row['token'].'">Ficha</a>';
         $editar='<a href="form-edit-desc.php?idDesc='.$row['iddescarga'].'" data-id="'.$row['iddescarga'].'"  class="btn btn-info btn-sm editbtn" >Visualizar</a>';
     }

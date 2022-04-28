@@ -19,7 +19,7 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false){
 
     if($atualiza->execute()){
         $atualizaDescarga = $db->prepare("UPDATE descarga SET situacao = :situacaoDesc, pendencia = :solucao WHERE token =:token" );
-        $atualizaDescarga->bindValue(':situacaoDesc', 'Pago');
+        $atualizaDescarga->bindValue(':situacaoDesc', 'Aguardando Validação');
         $atualizaDescarga->bindValue(':solucao',$situacao);
         $atualizaDescarga->bindValue(':token', $token);
         if($atualizaDescarga->execute()){
