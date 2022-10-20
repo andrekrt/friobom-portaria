@@ -17,7 +17,7 @@ $searchArray = array();
 ## Search 
 $searchQuery = " ";
 if($searchValue != ''){
-	$searchQuery = " AND (departamento LIKE :departamento OR nome_fornecedor LIKE :nome_fornecedor OR tipo_frete LIKE :tipo_frete OR nome_motorista LIKE :nome_motorista OR rg_motorista LIKE :rg_motorista OR placa LIKE :placa OR num_nf LIKE :num_nf ) ";
+	$searchQuery = " AND (departamento LIKE :departamento OR nome_fornecedor LIKE :nome_fornecedor OR tipo_frete LIKE :tipo_frete OR nome_motorista LIKE :nome_motorista OR rg_motorista LIKE :rg_motorista OR placa LIKE :placa OR num_nf LIKE :num_nf OR data_hora_chegada LIKE :data_hora_chegada ) ";
     $searchArray = array( 
         'departamento'=>"%$searchValue%", 
         'nome_fornecedor'=>"%$searchValue%",
@@ -26,6 +26,7 @@ if($searchValue != ''){
         'rg_motorista'=>"%$searchValue%",
         'placa'=>"%$searchValue%",
         'num_nf'=>"%$searchValue%",
+        'data_hora_chegada'=>"%$searchValue%"
     );
 }
 

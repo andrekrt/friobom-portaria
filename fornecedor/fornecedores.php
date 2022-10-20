@@ -51,6 +51,9 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_
             </div>
             <!-- dados exclusivo da página-->
             <div class="menu-principal">
+                <div class="icon-exp">
+                    <a href="fornecedores-xls.php"><img src="../assets/images/excel.jpg" alt=""></a>
+                </div>
                 <div class="table-responsive">
                     <table id='tableForn' class='table table-striped table-bordered nowrap text-center' style="width: 100%;">
                         <thead>
