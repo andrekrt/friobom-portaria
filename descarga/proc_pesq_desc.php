@@ -3,6 +3,18 @@ include '../conexao.php';
 session_start();
 $tipousuario =$_SESSION['tipousuario'];
 
+switch ($tipousuario) {
+    case '5':
+        $situacao = "DESCARGA FINALIZADA";
+        break; 
+    case '3':
+        $situacao="Aguardando Validação";  
+        break; 
+    default:
+        $situacao="%%";
+        break;
+}
+
 ## Read value
 $draw = $_POST['draw'];
 $row = $_POST['start'];
@@ -31,19 +43,19 @@ if($searchValue != ''){
 }
 
 ## Total number of records without filtering
-$stmt = $db->prepare("SELECT COUNT(DISTINCT(token)) AS allcount FROM descarga ");
+$stmt = $db->prepare("SELECT COUNT(DISTINCT(token)) AS allcount FROM descarga WHERE situacao LIKE '$situacao' ");
 $stmt->execute();
 $records = $stmt->fetch();
 $totalRecords = $records['allcount'];
 
 ## Total number of records with filtering
-$stmt = $db->prepare("SELECT COUNT(DISTINCT(token)) AS allcount FROM descarga LEFT JOIN fornecedores ON descarga.fornecedor = fornecedores.idfornecedores LEFT JOIN usuarios ON descarga.usuario_registro = usuarios.idusuarios LEFT JOIN transportadoras ON descarga.transportadora = transportadoras.idtransportadoras WHERE 1 ".$searchQuery);
+$stmt = $db->prepare("SELECT COUNT(DISTINCT(token)) AS allcount FROM descarga LEFT JOIN fornecedores ON descarga.fornecedor = fornecedores.idfornecedores LEFT JOIN usuarios ON descarga.usuario_registro = usuarios.idusuarios LEFT JOIN transportadoras ON descarga.transportadora = transportadoras.idtransportadoras WHERE 1 AND situacao LIKE '$situacao' ".$searchQuery);
 $stmt->execute($searchArray);
 $records = $stmt->fetch();
 $totalRecordwithFilter = $records['allcount'];
 
 ## Fetch records
-$stmt = $db->prepare("SELECT *, COUNT(num_nf) as qtdNf, SUM(qtd_volume) as totalVolume, SUM(valor_descarga) totalDescarga FROM descarga LEFT JOIN fornecedores ON descarga.fornecedor = fornecedores.idfornecedores LEFT JOIN usuarios ON descarga.usuario_registro = usuarios.idusuarios LEFT JOIN transportadoras ON descarga.transportadora = transportadoras.idtransportadoras WHERE 1 ".$searchQuery." GROUP BY token ORDER BY ".$columnName." ".$columnSortOrder." LIMIT :limit,:offset");
+$stmt = $db->prepare("SELECT *, COUNT(num_nf) as qtdNf, SUM(qtd_volume) as totalVolume, SUM(valor_descarga) totalDescarga FROM descarga LEFT JOIN fornecedores ON descarga.fornecedor = fornecedores.idfornecedores LEFT JOIN usuarios ON descarga.usuario_registro = usuarios.idusuarios LEFT JOIN transportadoras ON descarga.transportadora = transportadoras.idtransportadoras WHERE 1 AND situacao LIKE '$situacao' ".$searchQuery." GROUP BY token ORDER BY ".$columnName." ".$columnSortOrder." LIMIT :limit,:offset");
 
 // Bind values
 foreach($searchArray as $key=>$search){
