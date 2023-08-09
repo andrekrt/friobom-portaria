@@ -10,6 +10,11 @@ switch ($tipousuario) {
     case '3':
         $situacao="Aguardando Validação";  
         break; 
+    case '1':
+        $situacao="Aguardando Validação"; 
+        break;
+    case '4':
+        $situacao="Validada";
     default:
         $situacao="%%";
         break;
@@ -43,19 +48,19 @@ if($searchValue != ''){
 }
 
 ## Total number of records without filtering
-$stmt = $db->prepare("SELECT COUNT(DISTINCT(token)) AS allcount FROM descarga WHERE situacao LIKE '$situacao' ");
+$stmt = $db->prepare("SELECT COUNT(DISTINCT(token)) AS allcount FROM descarga WHERE excluido=0 AND situacao LIKE '$situacao' ");
 $stmt->execute();
 $records = $stmt->fetch();
 $totalRecords = $records['allcount'];
 
 ## Total number of records with filtering
-$stmt = $db->prepare("SELECT COUNT(DISTINCT(token)) AS allcount FROM descarga LEFT JOIN fornecedores ON descarga.fornecedor = fornecedores.idfornecedores LEFT JOIN usuarios ON descarga.usuario_registro = usuarios.idusuarios LEFT JOIN transportadoras ON descarga.transportadora = transportadoras.idtransportadoras WHERE 1 AND situacao LIKE '$situacao' ".$searchQuery);
+$stmt = $db->prepare("SELECT COUNT(DISTINCT(token)) AS allcount FROM descarga LEFT JOIN fornecedores ON descarga.fornecedor = fornecedores.idfornecedores LEFT JOIN usuarios ON descarga.usuario_registro = usuarios.idusuarios LEFT JOIN transportadoras ON descarga.transportadora = transportadoras.idtransportadoras WHERE 1 AND excluido=0 AND situacao LIKE '$situacao' ".$searchQuery);
 $stmt->execute($searchArray);
 $records = $stmt->fetch();
 $totalRecordwithFilter = $records['allcount'];
 
 ## Fetch records
-$stmt = $db->prepare("SELECT *, COUNT(num_nf) as qtdNf, SUM(qtd_volume) as totalVolume, SUM(valor_descarga) totalDescarga FROM descarga LEFT JOIN fornecedores ON descarga.fornecedor = fornecedores.idfornecedores LEFT JOIN usuarios ON descarga.usuario_registro = usuarios.idusuarios LEFT JOIN transportadoras ON descarga.transportadora = transportadoras.idtransportadoras WHERE 1 AND situacao LIKE '$situacao' ".$searchQuery." GROUP BY token ORDER BY ".$columnName." ".$columnSortOrder." LIMIT :limit,:offset");
+$stmt = $db->prepare("SELECT *, COUNT(num_nf) as qtdNf, SUM(qtd_volume) as totalVolume, SUM(valor_descarga) totalDescarga FROM descarga LEFT JOIN fornecedores ON descarga.fornecedor = fornecedores.idfornecedores LEFT JOIN usuarios ON descarga.usuario_registro = usuarios.idusuarios LEFT JOIN transportadoras ON descarga.transportadora = transportadoras.idtransportadoras WHERE 1 AND excluido=0 AND situacao LIKE '$situacao' ".$searchQuery." GROUP BY token ORDER BY ".$columnName." ".$columnSortOrder." LIMIT :limit,:offset");
 
 // Bind values
 foreach($searchArray as $key=>$search){
@@ -98,32 +103,36 @@ foreach($empRecords as $row){
     }
 
     if(($tipousuario ==1 || $tipousuario == 99) && ($row['pago']==0)){
-        $ficha = '<a target="_blank" class="btn btn-sm btn-primary" href="ordem-pagamento.php?id='.$row['token'].'">Ficha</a>';
-        $editar='<a href="form-edit-desc.php?idDesc='.$row['iddescarga'].'" data-id="'.$row['iddescarga'].'"  class="btn btn-info btn-sm editbtn" >Visualizar</a>';
+        $ficha = ' <a target="_blank" class="btn btn-sm btn-primary" href="ordem-pagamento.php?id='.$row['token'].'">Ficha</a> ';
+        $editar=' <a href="form-edit-desc.php?idDesc='.$row['iddescarga'].'" data-id="'.$row['iddescarga'].'"  class="btn btn-info btn-sm editbtn" >Visualizar</a> ';
     }
 
     if(($tipousuario==2 || $tipousuario==99) && ($row['pago']==1)){
-        $imprimir = '<a target="_blank" class="btn btn-sm btn-success" href="recibo.php?token='.$row['token'].'">Recibo</a>';
+        $imprimir = ' <a target="_blank" class="btn btn-sm btn-success" href="recibo.php?token='.$row['token'].'">Recibo</a> ';
     }elseif(($tipousuario==2 || $tipousuario==99) && ($row['pago']==0)){
-        $editar='<a href="form-edit-desc.php?idDesc='.$row['iddescarga'].'" data-id="'.$row['iddescarga'].'"  class="btn btn-info btn-sm editbtn" >Visualizar</a>';
+        $editar=' <a href="form-edit-desc.php?idDesc='.$row['iddescarga'].'" data-id="'.$row['iddescarga'].'"  class="btn btn-info btn-sm editbtn" >Visualizar</a> ';
     }
 
     if(($tipousuario==3 || $tipousuario==99) && ($row['situacao']=='Aguardando Validação')){
-        $validar = '<a href="validar.php?token='.$row['token'].'" id="bonus" data-id="'.$row['iddescarga'].'"  class="btn btn-info btn-sm editbtn" >Validar</a>';
-        $pendencia = '<a href="javascript:void();" id="pendencia" data-id="'.$row['iddescarga'].'"  class="btn btn-danger btn-sm editbtn" >Pendência</a>';
+        $validar = ' <a href="validar.php?token='.$row['token'].'" id="bonus" data-id="'.$row['iddescarga'].'"  class="btn btn-info btn-sm editbtn" >Validar</a> ';
+        $pendencia = ' <a href="javascript:void();" id="pendencia" data-id="'.$row['iddescarga'].'"  class="btn btn-danger btn-sm editbtn" >Pendência</a> ';
     }elseif(($tipousuario==4 || $tipousuario==99) && ($row['situacao']=='Validada' && $row['pago']==1)){
-        $descarga = '<a href="javascript:void();" id="iniciar" data-id="'.$row['iddescarga'].'"  class="btn btn-info btn-sm editbtn" >Inicar Descarga</a>';
+        $descarga = ' <a href="javascript:void();" id="iniciar" data-id="'.$row['iddescarga'].'"  class="btn btn-info btn-sm editbtn" >Inicar Descarga</a> ';
         
     }elseif(($tipousuario==4 || $tipousuario==99) && ($row['situacao']=='Descarga Iniciada')){
-        $finalizar = '<a href="javascript:void();" id="finalizar" data-id="'.$row['iddescarga'].'"  class="btn btn-info btn-sm editbtn" >Finalizar</a>';
+        $finalizar = ' <a href="javascript:void();" id="finalizar" data-id="'.$row['iddescarga'].'"  class="btn btn-info btn-sm editbtn" >Finalizar</a> ';
     }
 
     if(($tipousuario==5 || $tipousuario==99) && ($row['situacao']=='Descarga Finalizada')){
-        $recebido = '<a href="recebido.php?token='.$row['token'].'" data-id="'.$row['token'].'"  class="btn btn-info btn-sm editbtn" >Recebido</a>';
+        $recebido = ' <a href="recebido.php?token='.$row['token'].'" data-id="'.$row['token'].'"  class="btn btn-info btn-sm editbtn" >Recebido</a> ';
+    }
+
+    if(($tipousuario==4 || $tipousuario==99) || $row['situacao']!='Finalizada'){
+        $excluir = ' <a href="javascript:void();" id="excluir" data-id="'.$row['iddescarga'].'"  class="btn btn-danger btn-sm editbtn" >Excluir</a> ';
     }
 
     if(is_dir('nfs/'.$row['token'])){
-        $anexo = '<a href="nfs/'.$row['token'].'">NFs</a>';
+        $anexo = ' <a href="nfs/'.$row['token'].'">NFs</a> ';
     }else{
         $anexo='Sem NF';
     }
@@ -157,7 +166,7 @@ foreach($empRecords as $row){
         "pendencia"=>strtoupper($row['pendencia']),
         "anexo_pendencia"=>$anexo,
         "problema"=>strtoupper($row['problema']),
-        "acoes"=> $editar . $ficha . $excluir . $imprimir . $validar . $finalizar . $pendencia . $descarga . $recebido
+        "acoes"=> $editar . $ficha .  $imprimir . $validar . $finalizar . $pendencia . $descarga . $recebido .$excluir 
     );
 }
 

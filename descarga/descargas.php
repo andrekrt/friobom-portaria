@@ -195,11 +195,29 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
                 success: function(data){
                     var json = JSON.parse(data);
                     $('#tokenDesc').val(json.token);
-                    $('#idFinalizar').val(json.iddescarga);
-                    
+                    $('#idFinalizar').val(json.iddescarga);      
                 }
             })
+        });
+
+        $('#tableDesc').on('click', '#excluir', function(event){
             
+            var table = $('#tableDesc').DataTable();
+            var trid = $(this).closest('tr').attr('id');
+            var id = $(this).data('id');
+            
+            $('#modalExcluir').modal('show');
+
+            $.ajax({
+                url:"get_desc.php",
+                data:{id:id},
+                type:'post',
+                success: function(data){
+                    var json = JSON.parse(data);
+                    $('#tokenExclui').val(json.token);
+                    $('#idFinalizar').val(json.iddescarga);      
+                }
+            })
         });
     </script>
 
@@ -314,6 +332,40 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
             </div>
             <div class="modal-footer">
                 <button type="submit" name="analisar" class="btn btn-primary">Validar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Excluir -->
+<div class="modal fade" id="modalExcluir" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tituloExcluir">Excluir Descarga</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="excluir-desc.php" method="post">
+                    <input type="hidden" id="tokenExclui" name="tokenExclui">
+                    <div class="form-row">
+                        <div class="form-group col-md-12 ">
+                            <label for="motivo"> Motivo Exclusão</label>
+                            <select name="motivo" id="motivo" class="form-control">
+                                <option value=""></option>
+                                <option value="Lançamento Duplicado">Lançamento Duplicado</option>
+                                <option value="Erro de Cadastro de Transportadora">Erro de Cadastro de Transportadora</option>
+                                <option value="Erro de Cadastro de Fornecedor">Erro de Cadastro de Fornecedor</option>
+                                <option value="Erro de Valor de Descarga">Erro de Valor de Descarga</option>
+                            </select>
+                        </div>                                      
+                    </div>    
+            </div>
+            <div class="modal-footer">
+                <button type="submit" name="analisar" class="btn btn-primary">Excluir</button>
                 </form>
             </div>
         </div>

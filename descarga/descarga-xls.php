@@ -42,7 +42,9 @@ $tipoUsuario = $_SESSION['tipousuario'];
                 $html .= '<td class="text-center font-weight-bold"> Qtd de Volume</td>';
                 $html .= '<td class="text-center font-weight-bold"> Valor Descarga </td>';
                 $html .= '<td class="text-center font-weight-bold"> Forma de Pagamento</td>';
+                $html .= '<td class="text-center font-weight-bold"> Departamento</td>';
                 $html .= '<td class="text-center font-weight-bold"> Situação </td>';
+                $html .= '<td class="text-center font-weight-bold"> Pago? </td>';
                 $html .= '<td class="text-center font-weight-bold"> Pendência </td>';
                 $html .= '<td class="text-center font-weight-bold"> Problema </td>';
                 $html .= '<td class="text-center font-weight-bold"> Data de Pagamento </td>';
@@ -56,6 +58,11 @@ $tipoUsuario = $_SESSION['tipousuario'];
                 $sql = $db->query("SELECT * FROM descarga LEFT JOIN fornecedores ON descarga.fornecedor = fornecedores.idfornecedores LEFT JOIN transportadoras ON descarga.transportadora = transportadoras.idtransportadoras");
                 $dados = $sql->fetchAll();
                 foreach($dados as $dado){
+                    if($dado['pago']==1){
+                        $pago = "SIM";
+                    }else{
+                        $pago= "NÃO";
+                    }
 
                     $html .= '<tr>';
                     $html .= '<td>'.$dado['iddescarga']. '</td>';
@@ -76,7 +83,9 @@ $tipoUsuario = $_SESSION['tipousuario'];
                     $html .= '<td>'.str_replace(".",",", $dado['qtd_volume'] ). '</td>';
                     $html .= '<td>' . number_format($dado['valor_descarga'],"2",",",".") . '</td>';
                     $html .= '<td>'.$dado['forma_pagamento']. '</td>';
+                    $html .= '<td>'.$dado['departamento']. '</td>';
                     $html .= '<td>'.$dado['situacao']. '</td>';
+                    $html .= '<td>'. $pago . '</td>';
                     $html .= '<td>'.$dado['pendencia']. '</td>';
                     $html .= '<td>'.$dado['problema']. '</td>';
                     $html .= '<td>'.$dado['data_hora_pago']. '</td>';
