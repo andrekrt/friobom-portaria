@@ -45,6 +45,8 @@ $tipoUsuario = $_SESSION['tipousuario'];
                 $html .= '<td class="text-center font-weight-bold"> Departamento</td>';
                 $html .= '<td class="text-center font-weight-bold"> Situação </td>';
                 $html .= '<td class="text-center font-weight-bold"> Pago? </td>';
+                $html .= '<td class="text-center font-weight-bold"> Forma de Recebimento </td>';
+                $html .= '<td class="text-center font-weight-bold"> Confirmando Financeiro </td>';
                 $html .= '<td class="text-center font-weight-bold"> Pendência </td>';
                 $html .= '<td class="text-center font-weight-bold"> Problema </td>';
                 $html .= '<td class="text-center font-weight-bold"> Data de Pagamento </td>';
@@ -53,6 +55,8 @@ $tipoUsuario = $_SESSION['tipousuario'];
                 $html .= '<td class="text-center font-weight-bold"> Data do Início Descarga </td>';
                 $html .= '<td class="text-center font-weight-bold"> Data do Fim Descarga </td>';
                 $html .= '<td class="text-center font-weight-bold"> Data de Recebimento</td>';
+                $html .= '<td class="text-center font-weight-bold"> Excluído</td>';
+                $html .= '<td class="text-center font-weight-bold"> Motivo Exclusão</td>';
                 $html .= '</tr>';
 
                 $sql = $db->query("SELECT * FROM descarga LEFT JOIN fornecedores ON descarga.fornecedor = fornecedores.idfornecedores LEFT JOIN transportadoras ON descarga.transportadora = transportadoras.idtransportadoras");
@@ -63,6 +67,8 @@ $tipoUsuario = $_SESSION['tipousuario'];
                     }else{
                         $pago= "NÃO";
                     }
+
+                    $excluido = $dado['excluido']?"SIM":"NÃO";
 
                     $html .= '<tr>';
                     $html .= '<td>'.$dado['iddescarga']. '</td>';
@@ -86,6 +92,8 @@ $tipoUsuario = $_SESSION['tipousuario'];
                     $html .= '<td>'.$dado['departamento']. '</td>';
                     $html .= '<td>'.$dado['situacao']. '</td>';
                     $html .= '<td>'. $pago . '</td>';
+                    $html .= '<td>'. $dado['forma_recebimento'] . '</td>';
+                    $html .= '<td>'. $dado['confirmacao_financeiro'] . '</td>';
                     $html .= '<td>'.$dado['pendencia']. '</td>';
                     $html .= '<td>'.$dado['problema']. '</td>';
                     $html .= '<td>'.$dado['data_hora_pago']. '</td>';
@@ -94,6 +102,8 @@ $tipoUsuario = $_SESSION['tipousuario'];
                     $html .= '<td>'.$dado['data_hora_iniciodesc']. '</td>';
                     $html .= '<td>'.$dado['data_hora_fimdesc']. '</td>';
                     $html .= '<td>'.$dado['data_hora_recebido']. '</td>';
+                    $html .= '<td>'.$excluido. '</td>';
+                    $html .= '<td>'.$dado['motivo_exclusao']. '</td>';
                     $html .= '</tr>';
 
                 }

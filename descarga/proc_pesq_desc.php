@@ -34,7 +34,7 @@ $searchArray = array();
 ## Search 
 $searchQuery = " ";
 if($searchValue != ''){
-	$searchQuery = " AND (departamento LIKE :departamento OR nome_fornecedor LIKE :nome_fornecedor OR tipo_frete LIKE :tipo_frete OR nome_motorista LIKE :nome_motorista OR rg_motorista LIKE :rg_motorista OR placa LIKE :placa OR num_nf LIKE :num_nf OR data_hora_chegada LIKE :data_hora_chegada ) ";
+	$searchQuery = " AND (departamento LIKE :departamento OR nome_fornecedor LIKE :nome_fornecedor OR nome_transportadora LIKE :nome_transportadora OR tipo_frete LIKE :tipo_frete OR nome_motorista LIKE :nome_motorista OR rg_motorista LIKE :rg_motorista OR contato_motorista LIKE :contato_motorista OR placa LIKE :placa OR num_nf LIKE :num_nf OR data_hora_chegada LIKE :data_hora_chegada OR situacao LIKE :situacao OR token LIKE :token) ";
     $searchArray = array( 
         'departamento'=>"%$searchValue%", 
         'nome_fornecedor'=>"%$searchValue%",
@@ -43,7 +43,11 @@ if($searchValue != ''){
         'rg_motorista'=>"%$searchValue%",
         'placa'=>"%$searchValue%",
         'num_nf'=>"%$searchValue%",
-        'data_hora_chegada'=>"%$searchValue%"
+        'data_hora_chegada'=>"%$searchValue%",
+        'nome_transportadora'=>"%$searchValue%",
+        'contato_motorista'=>"%$searchValue%",
+        'situacao'=>"%$searchValue%",
+        'token'=>"%$searchValue%"
     );
 }
 
@@ -124,7 +128,7 @@ foreach($empRecords as $row){
     }
 
     if(($tipousuario==5 || $tipousuario==99) && ($row['situacao']=='Descarga Finalizada')){
-        $recebido = ' <a href="recebido.php?token='.$row['token'].'" data-id="'.$row['token'].'"  class="btn btn-info btn-sm editbtn" >Recebido</a> ';
+        $recebido = ' <a href="javascript:void();" id="recebido" data-id="'.$row['iddescarga'].'"  class="btn btn-info btn-sm editbtn" >Recebido</a> ';
     }
 
     if(($tipousuario==4 || $tipousuario==99) || $row['situacao']!='Finalizada'){
@@ -162,6 +166,8 @@ foreach($empRecords as $row){
         "valorTotalDescarga"=>"R$". number_format( $row['totalDescarga'],2,",",".") ,
         "forma_pagamento"=>$row['forma_pagamento'],
         "pago"=>$pago,
+        "recebimento"=>$row['forma_recebimento'],
+        "confirmacao"=>$row['confirmacao_financeiro'],
         "situacao"=>strtoupper($row['situacao']),
         "pendencia"=>strtoupper($row['pendencia']),
         "anexo_pendencia"=>$anexo,

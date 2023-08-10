@@ -2,6 +2,7 @@
 
 session_start();
 require("../conexao.php");
+include 'recebido.php';
 
 if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
     $tipoUsuario = $_SESSION['tipousuario'];
@@ -76,6 +77,8 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
                                 <th scope="col" class="text-center text-nowrap"> Valor Total Descarga </th>
                                 <th scope="col" class="text-center text-nowrap">Forma de Pagamento </th>
                                 <th scope="col" class="text-center text-nowrap">Pago </th>
+                                <th scope="col" class="text-center text-nowrap">Forma de Recebimento </th>
+                                <th scope="col" class="text-center text-nowrap">Confirmado Financeiro </th>
                                 <th scope="col" class="text-center text-nowrap">Status </th>
                                 <th scope="col" class="text-center text-nowrap">Pendência </th>
                                 <th scope="col" class="text-center text-nowrap">Anexos Pendência </th>
@@ -125,6 +128,8 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
                     { data: 'valorTotalDescarga'},
                     { data: 'forma_pagamento'},
                     { data: 'pago'},
+                    { data: 'recebimento'},
+                    { data: 'confirmacao'},
                     { data: 'situacao'},
                     { data: 'pendencia'},
                     { data: 'anexo_pendencia'},
@@ -215,6 +220,26 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
                 success: function(data){
                     var json = JSON.parse(data);
                     $('#tokenExclui').val(json.token);
+                    $('#idFinalizar').val(json.iddescarga);      
+                }
+            })
+        });
+
+        $('#tableDesc').on('click', '#recebido', function(event){
+            
+            var table = $('#tableDesc').DataTable();
+            var trid = $(this).closest('tr').attr('id');
+            var id = $(this).data('id');
+            
+            $('#modalRecebido').modal('show');
+
+            $.ajax({
+                url:"get_desc.php",
+                data:{id:id},
+                type:'post',
+                success: function(data){
+                    var json = JSON.parse(data);
+                    $('#tokenRecebido').val(json.token);
                     $('#idFinalizar').val(json.iddescarga);      
                 }
             })
