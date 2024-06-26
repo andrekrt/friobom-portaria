@@ -3,40 +3,53 @@
 session_start();
 require("../conexao.php");
 
-if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_SESSION['tipousuario']==99 || $_SESSION['tipousuario']==4)){
-
-    $tipoUsuario = $_SESSION['tipousuario'];
-
+if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_SESSION['tipousuario']==99 || $_SESSION['tipousuario']==4 || $_SESSION['tipousuario']==10) ){
     $token = filter_input(INPUT_POST, 'tokenDesc' );
     $problema = filter_input(INPUT_POST, 'problema');
     $idDescarga = filter_input(INPUT_POST, 'idFinalizar');
     $data = date('Y-m-d H:i');
 
-    $pendencias = $db->prepare("SELECT * FROM pendencias WHERE token_descarga = :token AND situacao_pendencia = :situacao");
-    $pendencias->bindValue(':token', $idDescarga);
-    $pendencias->bindValue(':situacao', "Devolução Parcial");
-    $pendencias->execute();
-    
-    $pendencias = $pendencias->rowCount();
+    $db->beginTransaction();
 
-    if($problema=="NÃO" && $pendencias==0){
-        $atualiza = $db->prepare("UPDATE descarga SET situacao = :situacao, data_hora_fimdesc = :dataFimDesc WHERE token = :token");
-        $atualiza->bindValue(':situacao', "Descarga Finalizada");
-        $atualiza->bindValue(':dataFimDesc', $data);
-        $atualiza->bindValue(':token', $token);
-        if($atualiza->execute()){
-            echo "<script>alert('Descarga Finalizada!');</script>";
-            echo "<script>window.location.href='descargas.php'</script>";
-        }else{
-            print_r($atualiza->errorInfo());
+    try{
+        $pendencias = $db->prepare("SELECT * FROM pendencias WHERE token_descarga = :token AND situacao_pendencia = :situacao");
+        $pendencias->bindValue(':token', $idDescarga);
+        $pendencias->bindValue(':situacao', "Devolução Parcial");
+        $pendencias->execute();
+        
+        $pendencias = $pendencias->rowCount();
+
+        if($problema=="NÃO" && $pendencias==0){
+            $atualiza = $db->prepare("UPDATE descarga SET situacao = :situacao, data_hora_fimdesc = :dataFimDesc WHERE token = :token");
+            $atualiza->bindValue(':situacao', "Descarga Finalizada");
+            $atualiza->bindValue(':dataFimDesc', $data);
+            $atualiza->bindValue(':token', $token);
+            $atualiza->execute();
+
+            $db->commit();
+            $_SESSION['msg'] = 'Descarga Finalizada!';
+            $_SESSION['icon']='success';
+
+            header("Location: descargas.php");
+            exit();
+
         }
+
+    }catch(Exception $e){
+        $db->rollBack();
+        $_SESSION['msg'] = 'Erro ao Finalizar Descarga';
+        $_SESSION['icon']='error';
+
+        header("Location: descargas.php");
+        exit();
     }
 
 }else{
+    $_SESSION['msg'] = 'Acesso Não Permitido';
+    $_SESSION['icon']='warning';
 
-    echo "<script>alert('Acesso não permitido');</script>";
-    echo "<script>window.location.href='../index.php'</script>";
-
+    header("Location: descargas.php");
+    exit();
 }
 
 ?>
@@ -86,8 +99,10 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_S
                                 <select class="form-control" required name="problemaDescarga" id="problemaDescarga">
                                     <option value=""></option>
                                         <option value="Avaria">Avaria</option>
-                                        <option value="Item Faltando">Item Faltando</option>
+                                        <option value="Falta">Falta</option>
                                         <option value="Intem Trocado">Item Trocado</option>
+                                        <option value="Próximo a Validade">Próximo a Validade</option>
+                                        <option value="Produto sem Pedido">Produto sem Pedido</option>
                                 </select>
                                 </div>
                                 <?php endif; ?>

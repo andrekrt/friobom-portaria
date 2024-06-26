@@ -8,13 +8,14 @@
                 <img src="../assets/images/menu/inicio.png" alt="">
             </a>
         </div>
+        <?php if($tipoUsuario<>7 && $tipoUsuario<>8 && $tipoUsuario<>9): ?>
         <div class="item">
             <a class="" onclick="menuDescarga()">
                 <img src="../assets/images/menu/menu-descarga.png" >
             </a>
             <nav id="submenuDescarga">
                 <ul class="nav flex-column">
-                    <?php if($tipoUsuario==1 || $tipoUsuario==99): ?>
+                    <?php if($tipoUsuario==1 || $tipoUsuario==99 || $tipoUsuario==10): ?>
                     <li class="nav-item"> <a class="nav-link" href="../descarga/form-descarga.php"> Nova Descarga </a> </li>
                     <?php endif; ?>
                     <li class="nav-item"> <a class="nav-link" href="../descarga/descargas.php">Descargas </a> </li>
@@ -22,6 +23,7 @@
                 </ul>
             </nav>
         </div>
+        <?php endif; ?>
         <?php if($tipoUsuario==99 || $tipoUsuario ==3): ?>
         <div class="item">
             <a onclick="menuFornecedor()">
@@ -56,6 +58,7 @@
             </nav> 
         </div>
         <?php endif; ?>
+        
         <div class="item">
             <a href="../sair.php">
                 <img src="../assets/images/menu/sair.png" alt="">

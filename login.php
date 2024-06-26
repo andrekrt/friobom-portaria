@@ -20,7 +20,14 @@ if(isset($_POST['login']) && isset($_POST['senha'])){
         $_SESSION['idusuario'] = $dados['idusuarios'];
         $_SESSION['tipousuario'] = $dados['tipo_usuario'];
         $_SESSION['nome'] = $dados['nome_usuario'];
-        header("Location:index.php");
+        $_SESSION['filial']= $dados['filial'];
+
+        if($dados['tipo_usuario']==7 || $dados['tipo_usuario']==8 || $dados['tipo_usuario']==9){
+            header("Location:caixas/carregamentos.php");
+        }else{
+            header("Location:index.php");
+        }
+        
 
     }else{
         $erro = "<div class='alert alert-danger' role='alert'>

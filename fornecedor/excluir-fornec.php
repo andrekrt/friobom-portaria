@@ -6,19 +6,30 @@ require("../conexao.php");
 $id = filter_input(INPUT_GET, 'id');
 
 if(isset($id) && empty($id) == false ){ 
-    
-    $sql = $db->prepare("DELETE FROM fornecedores WHERE idfornecedores = :id");
-    $sql->bindValue(':id',$id);
-    
-    if($sql->execute()){
-        echo "<script>alert('Excluído com Sucesso!');</script>";
-        echo "<script>window.location.href='fornecedores.php'</script>";
-    }else{
-        print_r($sql->errorInfo());
+
+    $db->beginTransaction();
+
+    try{
+        $sql = $db->prepare("UPDATE fornecedores SET ativo=:ativo WHERE idfornecedores = :id");
+        $sql->bindValue(':ativo', 0);
+        $sql->bindValue(':id',$id);
+        $sql->execute();
+
+        $db->commit();
+
+        $_SESSION['msg'] = 'Fornecedor Excluído com Sucesso!';
+        $_SESSION['icon']='success';
+
+    }catch(Exception $e){
+        $db->rollBack();
+        $_SESSION['msg'] = 'Erro ao Excluir Fornecedor';
+        $_SESSION['icon']='error';
     }
     
 }else{
-    header("Location:solicitacoes.php");
+    $_SESSION['msg'] = 'Acesso Não Permitido';
+    $_SESSION['icon']='error';
 }
-
+header("Location: fornecedores.php");
+exit();
 ?>

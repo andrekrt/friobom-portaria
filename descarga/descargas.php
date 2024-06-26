@@ -2,6 +2,7 @@
 
 session_start();
 require("../conexao.php");
+include 'recebido.php';
 
 if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
     $tipoUsuario = $_SESSION['tipousuario'];
@@ -58,6 +59,7 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
                     <table id='tableDesc' class='table table-striped table-bordered nowrap text-center' style="width: 100%;">
                         <thead>
                             <tr>
+                                <th scope="col" class="text-center text-nowrap">Filial</th>
                                 <th scope="col" class="text-center text-nowrap" > Código Descarga </th>
                                 <th scope="col" class="text-center text-nowrap">Qtd. NF </th>
                                 <th scope="col" class="text-center text-nowrap">Data Chegada</th>
@@ -76,10 +78,13 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
                                 <th scope="col" class="text-center text-nowrap"> Valor Total Descarga </th>
                                 <th scope="col" class="text-center text-nowrap">Forma de Pagamento </th>
                                 <th scope="col" class="text-center text-nowrap">Pago </th>
+                                <th scope="col" class="text-center text-nowrap">Forma de Recebimento </th>
+                                <th scope="col" class="text-center text-nowrap">Confirmado Financeiro </th>
                                 <th scope="col" class="text-center text-nowrap">Status </th>
                                 <th scope="col" class="text-center text-nowrap">Pendência </th>
                                 <th scope="col" class="text-center text-nowrap">Anexos Pendência </th>
                                 <th scope="col" class="text-center text-nowrap">Problema na Descarga </th>
+                      
                                 <th scope="col" class="text-center text-nowrap"> Ações</th>
                             </tr>
                         </thead>
@@ -96,7 +101,8 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.10.25/af-2.3.7/date-1.1.0/r-2.2.9/rg-1.1.3/sc-2.0.4/sp-1.3.0/datatables.min.js"></script>
-    
+    <!-- sweert alert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function(){
             $('#tableDesc').DataTable({
@@ -107,6 +113,7 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
                     'url':'proc_pesq_desc.php'
                 },
                 'columns': [
+                    { data: 'filial'},
                     { data: 'token'},
                     { data: 'qtdNf'},
                     { data: 'data'},
@@ -125,16 +132,19 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
                     { data: 'valorTotalDescarga'},
                     { data: 'forma_pagamento'},
                     { data: 'pago'},
+                    { data: 'recebimento'},
+                    { data: 'confirmacao'},
                     { data: 'situacao'},
                     { data: 'pendencia'},
                     { data: 'anexo_pendencia'},
                     { data: 'problema'},
+                    
                     { data: 'acoes'},
                 ],
                 "language":{
                     "url":"//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Portuguese-Brasil.json"
                 },
-                order: [[0, 'desc']]
+                order: [[1, 'desc']]
             });
         });
 
@@ -195,12 +205,86 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
                 success: function(data){
                     var json = JSON.parse(data);
                     $('#tokenDesc').val(json.token);
-                    $('#idFinalizar').val(json.iddescarga);
-                    
+                    $('#idFinalizar').val(json.iddescarga);      
                 }
             })
-            
         });
+
+        $('#tableDesc').on('click', '#excluir', function(event){
+            
+            var table = $('#tableDesc').DataTable();
+            var trid = $(this).closest('tr').attr('id');
+            var id = $(this).data('id');
+            
+            $('#modalExcluir').modal('show');
+
+            $.ajax({
+                url:"get_desc.php",
+                data:{id:id},
+                type:'post',
+                success: function(data){
+                    var json = JSON.parse(data);
+                    $('#tokenExclui').val(json.token);
+                    $('#idFinalizar').val(json.iddescarga);      
+                }
+            })
+        });
+
+        $('#tableDesc').on('click', '#recebido', function(event){
+            
+            var table = $('#tableDesc').DataTable();
+            var trid = $(this).closest('tr').attr('id');
+            var id = $(this).data('id');
+            
+            $('#modalRecebido').modal('show');
+
+            $.ajax({
+                url:"get_desc.php",
+                data:{id:id},
+                type:'post',
+                success: function(data){
+                    var json = JSON.parse(data);
+                    $('#tokenRecebido').val(json.token);
+                    $('#idFinalizar').val(json.iddescarga);      
+                }
+            })
+        });
+
+        function confirmaValidar(token){
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: 'Deseja Validar a Descarga ' +token +'?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim, validar!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Se o usuário confirmar, redirecione para a página de exclusão
+                    window.location.href = 'validar.php?token=' + token;
+                }
+            });
+        }
+
+        function confirmaPagamento(token){
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: 'Deseja Receber Pagamento da Descarga ' +token +'?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim, receber pagamento!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Se o usuário confirmar, redirecione para a página de exclusão
+                    window.location.href = 'pagar.php?token=' + token;
+                }
+            });
+        }
     </script>
 
 <!-- Modal finalizar descarga -->
@@ -320,5 +404,57 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false) {
     </div>
 </div>
 
+<!-- Modal Excluir -->
+<div class="modal fade" id="modalExcluir" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tituloExcluir">Excluir Descarga</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="excluir-desc.php" method="post">
+                    <input type="hidden" id="tokenExclui" name="tokenExclui">
+                    <div class="form-row">
+                        <div class="form-group col-md-12 ">
+                            <label for="motivo"> Motivo Exclusão</label>
+                            <select name="motivo" id="motivo" class="form-control">
+                                <option value=""></option>
+                                <option value="Lançamento Duplicado">Lançamento Duplicado</option>
+                                <option value="Erro de Cadastro de Transportadora">Erro de Cadastro de Transportadora</option>
+                                <option value="Erro de Cadastro de Fornecedor">Erro de Cadastro de Fornecedor</option>
+                                <option value="Erro de Valor de Descarga">Erro de Valor de Descarga</option>
+                            </select>
+                        </div>                                      
+                    </div>    
+            </div>
+            <div class="modal-footer">
+                <button type="submit" name="analisar" class="btn btn-primary">Excluir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- msg de sucesso ou erro -->
+<?php
+    // Verifique se há uma mensagem de confirmação na sessão
+    if (isset($_SESSION['msg']) && $_SESSION['icon']) {
+        // Exiba um alerta SweetAlert
+        echo "<script>
+                Swal.fire({
+                  icon: '$_SESSION[icon]',
+                  title: '$_SESSION[msg]',
+                  showConfirmButton: true,
+                });
+              </script>";
+
+        // Limpe a mensagem de confirmação da sessão
+        unset($_SESSION['msg']);
+        unset($_SESSION['status']);
+    }
+?>
 </body>
 </html>

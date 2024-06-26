@@ -11,25 +11,33 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_S
     $tipoVolume = filter_input(INPUT_POST, 'tipoVolume');
     $valorVolume = str_replace(",",".",filter_input(INPUT_POST, 'valorVolume')) ;
 
-    //echo "$id<br>$fornecedor<br>$departamento<br>$tipoVolume<br>$valorVolume";
+    $db->beginTransaction();
 
-    $atualiza = $db->prepare("UPDATE fornecedores SET nome_fornecedor = :fornecedor, departamento = :departamento, tipo_volume = :tipoVolume, valor_volume = :valorVolume WHERE idfornecedores = :id");
-    $atualiza->bindValue(':fornecedor', $fornecedor);
-    $atualiza->bindValue(':departamento', $departamento);
-    $atualiza->bindValue(':tipoVolume', $tipoVolume);
-    $atualiza->bindValue(':valorVolume', $valorVolume);
-    $atualiza->bindValue(':id', $id);
+    try{
+        
+        $atualiza = $db->prepare("UPDATE fornecedores SET nome_fornecedor = :fornecedor, departamento = :departamento, tipo_volume = :tipoVolume, valor_volume = :valorVolume WHERE idfornecedores = :id");
+        $atualiza->bindValue(':fornecedor', $fornecedor);
+        $atualiza->bindValue(':departamento', $departamento);
+        $atualiza->bindValue(':tipoVolume', $tipoVolume);
+        $atualiza->bindValue(':valorVolume', $valorVolume);
+        $atualiza->bindValue(':id', $id);
+        $atualiza->execute();
 
-    if($atualiza->execute()){
-        echo "<script> alert('Atualizado com Sucesso!')</script>";
-        echo "<script> window.location.href='fornecedores.php' </script>";
-    }else{
-        print_r($atualiza->errorInfo());
+        $db->commit();
+
+        $_SESSION['msg'] = 'Fornecedor Atualizado!';
+        $_SESSION['icon']='success';
+
+    }catch(Exception $e){
+        $db->rollBack();
+        $_SESSION['msg'] = 'Erro ao Atualizar Fornecedor';
+        $_SESSION['icon']='error';
     }
 
 }else{
-    echo "<script> alert('Acesso não permitido!')</script>";
-    echo "<script> window.location.href='colaboradores.php' </script>";
+    $_SESSION['msg'] = 'Acesso Não Permitido';
+    $_SESSION['icon']='error';
 }
-
+header("Location: descargas.php");
+exit();
 ?>

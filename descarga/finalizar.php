@@ -3,7 +3,7 @@
 session_start();
 require("../conexao.php");
 
-if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_SESSION['tipousuario']==99 || $_SESSION['tipousuario']==4)){
+if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_SESSION['tipousuario']==99 || $_SESSION['tipousuario']==4 || $_SESSION['tipousuario']==10)){
 
     $tipoUsuario = $_SESSION['tipousuario'];
 
@@ -13,17 +13,17 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_S
     $nfDev = $_FILES['nfDev'];
     $data = date('Y-m-d H:i');
 
-    //echo "$token<br>$problema<br>";
-    //echo count($nfDev['name']);
+    $db->beginTransaction();
 
-    $sql = $db->prepare("UPDATE descarga SET situacao = :situacao, problema = :problemas, obs_problema = :obs, data_hora_fimdesc = :dataFimDesc WHERE token = :token");
-    $sql->bindValue(':token', $token);
-    $sql->bindValue(':situacao', "Descarga Finalizada");
-    $sql->bindValue(':problemas', $problema);
-    $sql->bindValue(':dataFimDesc', $data);
-    $sql->bindValue(':obs', $obsProblema);
+    try{
+        $sql = $db->prepare("UPDATE descarga SET situacao = :situacao, problema = :problemas, obs_problema = :obs, data_hora_fimdesc = :dataFimDesc WHERE token = :token");
+        $sql->bindValue(':token', $token);
+        $sql->bindValue(':situacao', "Descarga Finalizada");
+        $sql->bindValue(':problemas', $problema);
+        $sql->bindValue(':dataFimDesc', $data);
+        $sql->bindValue(':obs', $obsProblema);
+        $sql->execute();
 
-    if($sql->execute()){
         if(!empty($nfDev['name'][0])){
             $diretorioPrincipal = "nfs/".$token;
             mkdir($diretorioPrincipal,0755);
@@ -32,20 +32,21 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_S
                 move_uploaded_file($nfDev['tmp_name'][$i],$destinoDocumentos);
             }
         }
-        echo "<script>alert('Descarga Finalizada!');</script>";
-        echo "<script>window.location.href='descargas.php'</script>";
 
-    }else{
-        print_r($sql->errorInfo());
+        $db->commit();
+        $_SESSION['msg'] = 'Descarga Finalizada!';
+        $_SESSION['icon']='success';
+
+    }catch(Exception $e){
+        $db->rollBack();
+        $_SESSION['msg'] = 'Erro ao Finalizar Descarga';
+        $_SESSION['icon']='error';
     }
 
-
-
 }else{
-
-    echo "<script>alert('Acesso não permitido');</script>";
-    echo "<script>window.location.href='../index.php'</script>";
-
+    $_SESSION['msg'] = 'Acesso Não Permitido';
+    $_SESSION['icon']='warning';
 }
-
+header("Location: descargas.php");
+exit();
 ?>

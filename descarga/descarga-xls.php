@@ -4,6 +4,12 @@ session_start();
 require("../conexao.php");
 
 $tipoUsuario = $_SESSION['tipousuario'];
+$filial = $_SESSION['filial'];
+if($filial===99){
+    $condicao = " ";
+}else{
+    $condicao = "AND descarga.filial=$filial";
+}
 
 ?>
 
@@ -42,7 +48,11 @@ $tipoUsuario = $_SESSION['tipousuario'];
                 $html .= '<td class="text-center font-weight-bold"> Qtd de Volume</td>';
                 $html .= '<td class="text-center font-weight-bold"> Valor Descarga </td>';
                 $html .= '<td class="text-center font-weight-bold"> Forma de Pagamento</td>';
+                $html .= '<td class="text-center font-weight-bold"> Departamento</td>';
                 $html .= '<td class="text-center font-weight-bold"> Situação </td>';
+                $html .= '<td class="text-center font-weight-bold"> Pago? </td>';
+                $html .= '<td class="text-center font-weight-bold"> Forma de Recebimento </td>';
+                $html .= '<td class="text-center font-weight-bold"> Confirmando Financeiro </td>';
                 $html .= '<td class="text-center font-weight-bold"> Pendência </td>';
                 $html .= '<td class="text-center font-weight-bold"> Problema </td>';
                 $html .= '<td class="text-center font-weight-bold"> Data de Pagamento </td>';
@@ -51,11 +61,20 @@ $tipoUsuario = $_SESSION['tipousuario'];
                 $html .= '<td class="text-center font-weight-bold"> Data do Início Descarga </td>';
                 $html .= '<td class="text-center font-weight-bold"> Data do Fim Descarga </td>';
                 $html .= '<td class="text-center font-weight-bold"> Data de Recebimento</td>';
+                $html .= '<td class="text-center font-weight-bold"> Excluído</td>';
+                $html .= '<td class="text-center font-weight-bold"> Motivo Exclusão</td>';
                 $html .= '</tr>';
 
-                $sql = $db->query("SELECT * FROM descarga LEFT JOIN fornecedores ON descarga.fornecedor = fornecedores.idfornecedores LEFT JOIN transportadoras ON descarga.transportadora = transportadoras.idtransportadoras");
+                $sql = $db->query("SELECT * FROM descarga LEFT JOIN fornecedores ON descarga.fornecedor = fornecedores.idfornecedores LEFT JOIN transportadoras ON descarga.transportadora = transportadoras.idtransportadoras WHERE 1 $condicao");
                 $dados = $sql->fetchAll();
                 foreach($dados as $dado){
+                    if($dado['pago']==1){
+                        $pago = "SIM";
+                    }else{
+                        $pago= "NÃO";
+                    }
+
+                    $excluido = $dado['excluido']?"SIM":"NÃO";
 
                     $html .= '<tr>';
                     $html .= '<td>'.$dado['iddescarga']. '</td>';
@@ -76,7 +95,11 @@ $tipoUsuario = $_SESSION['tipousuario'];
                     $html .= '<td>'.str_replace(".",",", $dado['qtd_volume'] ). '</td>';
                     $html .= '<td>' . number_format($dado['valor_descarga'],"2",",",".") . '</td>';
                     $html .= '<td>'.$dado['forma_pagamento']. '</td>';
+                    $html .= '<td>'.$dado['departamento']. '</td>';
                     $html .= '<td>'.$dado['situacao']. '</td>';
+                    $html .= '<td>'. $pago . '</td>';
+                    $html .= '<td>'. $dado['forma_recebimento'] . '</td>';
+                    $html .= '<td>'. $dado['confirmacao_financeiro'] . '</td>';
                     $html .= '<td>'.$dado['pendencia']. '</td>';
                     $html .= '<td>'.$dado['problema']. '</td>';
                     $html .= '<td>'.$dado['data_hora_pago']. '</td>';
@@ -85,6 +108,8 @@ $tipoUsuario = $_SESSION['tipousuario'];
                     $html .= '<td>'.$dado['data_hora_iniciodesc']. '</td>';
                     $html .= '<td>'.$dado['data_hora_fimdesc']. '</td>';
                     $html .= '<td>'.$dado['data_hora_recebido']. '</td>';
+                    $html .= '<td>'.$excluido. '</td>';
+                    $html .= '<td>'.$dado['motivo_exclusao']. '</td>';
                     $html .= '</tr>';
 
                 }

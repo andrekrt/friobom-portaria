@@ -7,8 +7,10 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_
     $tipoUsuario = $_SESSION['tipousuario'];
     
 } else {
-    echo "<script>alert('Acesso não permitido');</script>";
-    echo "<script>window.location.href='../index.php'</script>";
+    $_SESSION['msg'] = 'Acesso Não Permitido';
+    $_SESSION['icon']='warning';
+    header("Location: ../index.php");
+    exit();
 }
 
 ?>
@@ -51,6 +53,9 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_
             </div>
             <!-- dados exclusivo da página-->
             <div class="menu-principal">
+                <div class="icon-exp">
+                    <a href="fornecedores-xls.php"><img src="../assets/images/excel.jpg" alt=""></a>
+                </div>
                 <div class="table-responsive">
                     <table id='tableForn' class='table table-striped table-bordered nowrap text-center' style="width: 100%;">
                         <thead>
@@ -61,6 +66,7 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_
                                 <th scope="col" class="text-center text-nowrap">Tipo de Volume</th>
                                 <th scope="col" class="text-center text-nowrap"> Valor por Volume </th>
                                 <th scope="col" class="text-center text-nowrap"> Usuário</th> 
+                                <th scope="col" class="text-center text-nowrap"> Filial</th> 
                                 <th scope="col" class="text-center text-nowrap"> Ações</th> 
                             </tr>
                         </thead>
@@ -74,7 +80,8 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.10.25/af-2.3.7/date-1.1.0/r-2.2.9/rg-1.1.3/sc-2.0.4/sp-1.3.0/datatables.min.js"></script>
-    
+    <!-- sweert alert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function(){
             $('#tableForn').DataTable({
@@ -91,6 +98,7 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_
                     { data: 'tipo_volume'},
                     { data: 'valor_volume'},
                     { data: 'usuario_registro'},
+                    { data: 'filial'},
                     { data: 'acoes'},
                 ],
                 "language":{
@@ -183,5 +191,25 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_
         $('#valorVolume').mask("#.##0,000", {reverse: true});
     });
 </script>
+
+
+<!-- msg de sucesso ou erro -->
+<?php
+    // Verifique se há uma mensagem de confirmação na sessão
+    if (isset($_SESSION['msg']) && $_SESSION['icon']) {
+        // Exiba um alerta SweetAlert
+        echo "<script>
+                Swal.fire({
+                  icon: '$_SESSION[icon]',
+                  title: '$_SESSION[msg]',
+                  showConfirmButton: true,
+                });
+              </script>";
+
+        // Limpe a mensagem de confirmação da sessão
+        unset($_SESSION['msg']);
+        unset($_SESSION['status']);
+    }
+?>
 </body>
 </html>

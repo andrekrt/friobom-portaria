@@ -10,22 +10,29 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false){
     $situacao = "Descarga Iniciada";
     $data = date('Y-m-d H:i');
 
-    $sql = $db->prepare("UPDATE descarga SET situacao = :situacao, bonus = :bonus, doca = :doca, data_hora_iniciodesc = :dataInicioDesc WHERE token = :token" );
-    $sql->bindValue(':situacao', $situacao);
-    $sql->bindValue(':bonus', $bonus);
-    $sql->bindValue(':doca', $doca);
-    $sql->bindValue(':dataInicioDesc', $data);
-    $sql->bindValue(':token', $token);
+    $db->beginTransaction();
 
-    //echo "$token<br>$situacao<br>$bonus<br>$doca";
+    try{
+        $sql = $db->prepare("UPDATE descarga SET situacao = :situacao, bonus = :bonus, doca = :doca, data_hora_iniciodesc = :dataInicioDesc WHERE token = :token" );
+        $sql->bindValue(':situacao', $situacao);
+        $sql->bindValue(':bonus', $bonus);
+        $sql->bindValue(':doca', $doca);
+        $sql->bindValue(':dataInicioDesc', $data);
+        $sql->bindValue(':token', $token);
+        $sql->execute();
 
-    if($sql->execute()){
-        echo "<script> alert('Atualizado!')</script>";
-        echo "<script> window.location.href='descargas.php' </script>";
-    }else{
-        print_r($sql->errorInfo());
+        $db->commit();
+
+        $_SESSION['msg'] = 'Descarga Iniciada com Sucesso!';
+        $_SESSION['icon']='success';
+
+    }catch(Exception $e){
+        $db->rollBack();
+        $_SESSION['msg'] = 'Erro ao Iniciar Descarga';
+        $_SESSION['icon']='error';
     }
 
 }
-
+header("Location: descargas.php");
+exit();
 ?>

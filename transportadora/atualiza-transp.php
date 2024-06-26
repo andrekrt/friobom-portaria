@@ -9,23 +9,29 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_S
     $transportadora = filter_input(INPUT_POST, 'transportadora');
     $valorVolume = str_replace(",",".",filter_input(INPUT_POST, 'valorVolume')) ;
 
-    //echo "$id<br>$transportadora<br>$valorVolume";
+    $db->beginTransaction();
 
-    $atualiza = $db->prepare("UPDATE transportadoras SET nome_transportadora = :transportadora, valor_volume_transp = :valorVolume WHERE idtransportadoras = :id");
-    $atualiza->bindValue(':transportadora', $transportadora);
-    $atualiza->bindValue(':valorVolume', $valorVolume);
-    $atualiza->bindValue(':id', $id);
+    try{
+        $atualiza = $db->prepare("UPDATE transportadoras SET nome_transportadora = :transportadora, valor_volume_transp = :valorVolume WHERE idtransportadoras = :id");
+        $atualiza->bindValue(':transportadora', $transportadora);
+        $atualiza->bindValue(':valorVolume', $valorVolume);
+        $atualiza->bindValue(':id', $id);
+        $atualiza->execute();
 
-    if($atualiza->execute()){
-        echo "<script> alert('Atualizado com Sucesso!')</script>";
-        echo "<script> window.location.href='transportadoras.php' </script>";
-    }else{
-        print_r($atualiza->errorInfo());
+        $db->commit();
+
+        $_SESSION['msg'] = 'Transportadora Atualizada!';
+        $_SESSION['icon']='success';
+    }catch(Exception $e){
+        $db->rollBack();
+        $_SESSION['msg'] = 'Erro ao Atualizar Transportadora!';
+        $_SESSION['icon']='error';
     }
 
 }else{
-    echo "<script> alert('Acesso não permitido!')</script>";
-    echo "<script> window.location.href='colaboradores.php' </script>";
+    $_SESSION['msg'] = 'Acesso Não Permitido';
+    $_SESSION['icon']='error';
 }
-
+header("Location: descargas.php");
+exit();
 ?>

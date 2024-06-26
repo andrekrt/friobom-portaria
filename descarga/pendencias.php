@@ -58,6 +58,7 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_
                     <table id='tablePend' class='table table-striped table-bordered nowrap text-center' style="width: 100%;">
                         <thead>
                             <tr>
+                                <th scope="col" class="text-center text-nowrap">Filial</th>
                                 <th scope="col" class="text-center text-nowrap" >Cód. Descarga </th>
                                 <th scope="col" class="text-center text-nowrap" >Fornecedor </th>
                                 <th scope="col" class="text-center text-nowrap">Produto Sem Cadastro </th>
@@ -67,6 +68,7 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_
                                 <th scope="col" class="text-center text-nowrap">Produto Inexistente</th>
                                 <th scope="col" class="text-center text-nowrap">Anexos</th>
                                 <th scope="col" class="text-center text-nowrap">Situação</th>
+                             
                                 <th scope="col" class="text-center text-nowrap"> Ações </th>
                             </tr>
                         </thead>
@@ -94,6 +96,7 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_
                     'url':'proc_pesq_pend.php'
                 },
                 'columns': [
+                    { data: 'filial'},
                     {data: 'id'},
                     { data: 'nome_fornecedor'},
                     { data: 'cadastro'},
@@ -103,12 +106,13 @@ if (isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_
                     { data: 'produto_inexistente'},
                     { data: 'anexos'},
                     { data: 'situacao'},
+                    
                     { data: 'acoes'},
                 ],
                 "language":{
                     "url":"//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Portuguese-Brasil.json"
                 },
-                order: [[0, 'desc']]
+                order: [[1, 'desc']]
             });
         });
 

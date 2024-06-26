@@ -13,15 +13,37 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false){
     $sql = $db->query("SELECT * FROM descarga GROUP BY token");
     $total = $sql->rowCount();
     
-    $sqlPend = $db->prepare("SELECT * FROM descarga WHERE situacao <> :situacao GROUP BY token ");
-    $sqlPend->bindValue(':situacao', $situacao);
+    $sqlPend = $db->prepare("SELECT * FROM descarga WHERE situacao = :situacao GROUP BY token ");
+    $sqlPend->bindValue(':situacao', 'Aguardando Validação');
     $sqlPend->execute();
-    $totalPend = $sqlPend->rowCount();
+    $numValidando = $sqlPend->rowCount();
 
-    $sqlFin = $db->prepare("SELECT * FROM descarga WHERE situacao = :situacao GROUP BY token");
-    $sqlFin->bindValue(':situacao', $situacao);
-    $sqlFin->execute();
-    $totalFin = $sqlFin->rowCount();
+    $sqlValidade = $db->prepare("SELECT * FROM descarga WHERE situacao = :situacao AND pago = :pago GROUP BY token");
+    $sqlValidade->bindValue(':situacao', 'Validada');
+    $sqlValidade->bindValue(':pago', 1);
+    $sqlValidade->execute();
+    $numValidada = $sqlValidade->rowCount();
+
+    $sqlValidada = $db->prepare("SELECT * FROM descarga WHERE situacao = :situacao AND pago = :pago GROUP BY token");
+    $sqlValidada->bindValue(':situacao', 'Validada');
+    $sqlValidada->bindValue(':pago', 1);
+    $sqlValidada->execute();
+    $numValidada = $sqlValidada->rowCount();
+
+    $sqlDescarregando = $db->prepare("SELECT * FROM descarga WHERE situacao = :situacao GROUP BY token");
+    $sqlDescarregando->bindValue(':situacao', 'Descarga Iniciada');
+    $sqlDescarregando->execute();
+    $numDescarregando = $sqlDescarregando->rowCount();
+
+    $sqlFinalizada = $db->prepare("SELECT * FROM descarga WHERE situacao = :situacao GROUP BY token");
+    $sqlFinalizada->bindValue(':situacao', 'Descarga Finalizada');
+    $sqlFinalizada->execute();
+    $numFinalizada = $sqlFinalizada->rowCount();
+
+    $sqlRecebido = $db->prepare("SELECT * FROM descarga WHERE situacao = :situacao GROUP BY token");
+    $sqlRecebido->bindValue(':situacao', 'Recebido');
+    $sqlRecebido->execute();
+    $numRecebido = $sqlRecebido->rowCount();
 
 }else{
     header("Location:login.php");
@@ -56,13 +78,14 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false){
                             <img src="assets/images/menu/inicio.png" alt="">
                         </a>
                     </div>
+                    <?php if($tipoUsuario<>7 && $tipoUsuario<>8 && $tipoUsuario<>9): ?>
                     <div class="item">
                         <a class="" onclick="menuDescarga()">
                             <img src="assets/images/menu/menu-descarga.png" >
                         </a>
                         <nav id="submenuDescarga">
                             <ul class="nav flex-column">
-                                <?php if($tipoUsuario==1 || $tipoUsuario==99): ?>
+                                <?php if($tipoUsuario==1 || $tipoUsuario==99 || $tipoUsuario==10): ?>
                                 <li class="nav-item"> <a class="nav-link" href="descarga/form-descarga.php"> Nova Descarga </a> </li>
                                 <?php endif; ?>
                                 <li class="nav-item"> <a class="nav-link" href="descarga/descargas.php">Descargas </a> </li>
@@ -70,6 +93,7 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false){
                             </ul>
                         </nav>
                     </div>
+                    <?php endif; ?>
                     <?php if($tipoUsuario==99 || $tipoUsuario ==3) : ?>
                     <div class="item">
                         <a onclick="menuFornecedor()">
@@ -82,7 +106,6 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false){
                             </ul>
                         </nav>
                     </div>
-                    
                     <div class="item">
                         <a class="" onclick="menuTransportadora()">
                             <img src="assets/images/menu/menu-transportadora.png">
@@ -105,6 +128,7 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false){
                         </nav> 
                     </div>
                     <?php endif; ?>
+                  
                     <div class="item">
                         <a href="sair.php">
                             <img src="assets/images/menu/sair.png" alt="">
@@ -138,11 +162,29 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false){
                         </div>
                         <div class="indice-ind">
                             <div class="indice-ind-tittle">
-                                <p>Descargas Pendente</p>
+                                <p>Aguardando Validação</p>
                             </div>
                             <div class="indice-qtde">
-                                <img src="assets/images/icones/icon-descarga-pendente.png" alt="">
-                                <p class="qtde"> <?=$totalPend?> </p>
+                                <img src="assets/images/icones/validacao.png" alt="">
+                                <p class="qtde"> <?=$numValidando?> </p>
+                            </div>
+                        </div>
+                        <div class="indice-ind">
+                            <div class="indice-ind-tittle">
+                                <p>Prontas para Descarregar</p>
+                            </div>
+                            <div class="indice-qtde">
+                                <img src="assets/images/icones/icon-descarga.png" alt="">
+                                <p class="qtde"> <?=$numValidada?> </p>
+                            </div>
+                        </div>
+                        <div class="indice-ind">
+                            <div class="indice-ind-tittle">
+                                <p>Descarregando</p>
+                            </div>
+                            <div class="indice-qtde">
+                                <img src="assets/images/icones/icon-descarga.png" alt="">
+                                <p class="qtde"> <?=$numDescarregando?> </p>
                             </div>
                         </div>
                         <div class="indice-ind">
@@ -150,8 +192,17 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false){
                                 <p>Descargas Finalizadas</p>
                             </div>
                             <div class="indice-qtde">
-                                <img src="assets/images/icones/contrato-assinado.png" alt="">
-                                <p class="qtde"> <?=$totalFin?> </p>
+                                <img src="assets/images/icones/icon-descarga.png" alt="">
+                                <p class="qtde"> <?=$numFinalizada?> </p>
+                            </div>
+                        </div>
+                        <div class="indice-ind">
+                            <div class="indice-ind-tittle">
+                                <p>Recebidas</p>
+                            </div>
+                            <div class="indice-qtde">
+                                <img src="assets/images/icones/recebido.png" alt="">
+                                <p class="qtde"> <?=$numRecebido?> </p>
                             </div>
                         </div>
                     </div>
@@ -161,5 +212,27 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false){
         <script src="assets/js/jquery.js"></script>
         <script src="assets/js/bootstrap.bundle.min.js"></script>
         <script src="assets/js/menu.js"></script>
+        <!-- sweert alert -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </body>
+
+    
+<!-- msg de sucesso ou erro -->
+<?php
+    // Verifique se há uma mensagem de confirmação na sessão
+    if (isset($_SESSION['msg']) && $_SESSION['icon']) {
+        // Exiba um alerta SweetAlert
+        echo "<script>
+                Swal.fire({
+                  icon: '$_SESSION[icon]',
+                  title: '$_SESSION[msg]',
+                  showConfirmButton: true,
+                });
+              </script>";
+
+        // Limpe a mensagem de confirmação da sessão
+        unset($_SESSION['msg']);
+        unset($_SESSION['status']);
+    }
+?>
 </html>

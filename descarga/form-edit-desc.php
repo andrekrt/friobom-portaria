@@ -3,7 +3,7 @@
 session_start();
 require("../conexao.php");
 
-if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_SESSION['tipousuario'] ==1 || $_SESSION['tipousuario']==99 || $_SESSION['tipousuario'] == 2)){
+if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_SESSION['tipousuario'] ==1 || $_SESSION['tipousuario']==99 || $_SESSION['tipousuario'] == 2 || $_SESSION['tipousuario']==5)){
 
     $tipoUsuario = $_SESSION['tipousuario'];
 
@@ -176,7 +176,7 @@ if(isset($_SESSION['idusuario']) && empty($_SESSION['idusuario'])==false && ($_S
                                     <input type="text" readonly name="pagamento" id="pagamento" class="form-control" value="<?=$dado['forma_pagamento']?>">
                                 </div>
                                 <?php
-                                if($tipoUsuario==2 || $tipoUsuario==99):
+                                if($tipoUsuario==2 || $tipoUsuario==99 || $tipoUsuario==5):
                                 ?>
                                 <div class="form-group col-md-3 espaco">
                                     <label for="situacao">Status</label>
